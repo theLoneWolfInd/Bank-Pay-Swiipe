@@ -15,7 +15,7 @@ import CRNotifications
 import BottomPopup
 
 class AddBankAccount: UIViewController,UITextFieldDelegate {
-
+    
     var arrSelectBank:Array<Any>!// = ["Select Bank", "Bank 1","Bank 2","Bank 3","Bank 4","Bank 5"]
     
     var BankType = ["Current", "Saving"]
@@ -23,7 +23,7 @@ class AddBankAccount: UIViewController,UITextFieldDelegate {
     
     var pickerView: UIPickerView?
     var pickerViewSection: UIPickerView?
-        
+    
     // save ids
     var saveCardId:String!
     var saveBankAccountId:String!
@@ -89,12 +89,12 @@ class AddBankAccount: UIViewController,UITextFieldDelegate {
     }
     
     /*
-    @IBOutlet var txtAccountType: UITextField! {
-        didSet {
-            textFieldCustomMethod(textField: txtAccountType, placeholder: "Accout Type")
-        }
-    }
-    */
+     @IBOutlet var txtAccountType: UITextField! {
+     didSet {
+     textFieldCustomMethod(textField: txtAccountType, placeholder: "Accout Type")
+     }
+     }
+     */
     
     @IBOutlet weak var btnAddAccount:UIButton! {
         didSet {
@@ -106,8 +106,8 @@ class AddBankAccount: UIViewController,UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-         self.view.backgroundColor = .white
+        
+        self.view.backgroundColor = .white
         
         
         btnBottomPopUpSheetOccurs.addTarget(self, action: #selector(openBottomSheetClickMethod), for: .touchUpInside)
@@ -117,7 +117,7 @@ class AddBankAccount: UIViewController,UITextFieldDelegate {
         if userName == "loginViaPersonal" {
             // personal user
             navigationBar.backgroundColor = NAVIGATION_PERSONAL_BACKGROUND_COLOR
-             btnAddAccount.backgroundColor = NAVIGATION_PERSONAL_BACKGROUND_COLOR
+            btnAddAccount.backgroundColor = NAVIGATION_PERSONAL_BACKGROUND_COLOR
         }
         else {
             navigationBar.backgroundColor = NAVIGATION_BUSINESS_BACKGROUND_COLOR
@@ -127,7 +127,7 @@ class AddBankAccount: UIViewController,UITextFieldDelegate {
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(
             target: self,
             action: #selector(AddBankAccount.dismissKeyboard))
-
+        
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
         
@@ -142,7 +142,7 @@ class AddBankAccount: UIViewController,UITextFieldDelegate {
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
-          return .lightContent
+        return .lightContent
     }
     
     @objc func backClickMethod() {
@@ -159,7 +159,7 @@ class AddBankAccount: UIViewController,UITextFieldDelegate {
         popupVC.popupDelegate = self
         popupVC.strGetDetails = "savedBankListOrderCard"
         //popupVC.getArrListOfCategory =
-         popupVC.arrListOfBanks = self.arrSelectBank as NSArray?
+        popupVC.arrListOfBanks = self.arrSelectBank as NSArray?
         self.present(popupVC, animated: true, completion: nil)
     }
     
@@ -187,7 +187,7 @@ class AddBankAccount: UIViewController,UITextFieldDelegate {
             NSAttributedString.Key.foregroundColor: UIColor.lightGray,
             NSAttributedString.Key.font : UIFont(name: "OpenSans-Bold", size: 12)!
         ]
-
+        
         textField.attributedPlaceholder = NSAttributedString(string: placeholder, attributes:attributes)
         
         let leftView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: 20.0, height: 2.0))
@@ -198,96 +198,96 @@ class AddBankAccount: UIViewController,UITextFieldDelegate {
     
     // MARK:- LIST OF BANKS
     @objc func listOfBankWB() {
-           // ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
-           
+        // ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
+        
         let defaults = UserDefaults.standard
         let userName = defaults.string(forKey: "KeyLoginPersonal")
         if userName == "loginViaPersonal" {
             // personal user
-             ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
+            ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
             
         }
         else {
-             ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
+            ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
         }
         
-               let urlString = BASE_URL_SWIIPE
-               
-               var parameters:Dictionary<AnyHashable, Any>!
-           
+        let urlString = BASE_URL_SWIIPE
+        
+        var parameters:Dictionary<AnyHashable, Any>!
+        
         /*
          [action] => banklist
          */
-                   parameters = [
-                       "action" : "banklist"
-                                ]
+        parameters = [
+            "action" : "banklist"
+        ]
         
-                   print("parameters-------\(String(describing: parameters))")
-                   
-                   Alamofire.request(urlString, method: .post, parameters: parameters as? Parameters).responseJSON
-                       {
-                           response in
-               
-                           switch(response.result) {
-                           case .success(_):
-                              if let data = response.result.value {
-
-                               let JSON = data as! NSDictionary
-                                  // print(JSON)
-                              
-                               var strSuccess : String!
-                               strSuccess = JSON["status"]as Any as? String
-                               
-                               var strSuccessAlert : String!
-                               strSuccessAlert = JSON["msg"]as Any as? String
-                               
-                               if strSuccess == "success" //true
-                               {
-                                
-                                var ar : NSArray!
-                                ar = (JSON["data"] as! Array<Any>) as NSArray
-                                self.arrSelectBank = (ar as! Array<Any>)
-                                
-                                //self.arrListOfAllCards = self.arrListOfSavedCards
-                                
-    
-                                
-                                
-                                ERProgressHud.sharedInstance.hide()
-                                   
-                               }
-                               else
-                               {
-                                   // self.indicator.stopAnimating()
-                                   // self.enableService()
-                                CRNotifications.showNotification(type: CRNotifications.error, title: "Error!", message:strSuccessAlert, dismissDelay: 1.5, completion:{})
-                                   ERProgressHud.sharedInstance.hide()
-                               }
-                               
-                           }
-
-                           case .failure(_):
-                               print("Error message:\(String(describing: response.result.error))")
-                               // self.indicator.stopAnimating()
-                               // self.enableService()
-                               ERProgressHud.sharedInstance.hide()
-                               
-                               let alertController = UIAlertController(title: nil, message: SERVER_ISSUE_MESSAGE_ONE+"\n"+SERVER_ISSUE_MESSAGE_TWO, preferredStyle: .actionSheet)
-                               
-                               let okAction = UIAlertAction(title: "OK", style: UIAlertAction.Style.default) {
-                                       UIAlertAction in
-                                       NSLog("OK Pressed")
-                                   }
-                               
-                               alertController.addAction(okAction)
-                               
-                               self.present(alertController, animated: true, completion: nil)
-                               
-                               break
-                            }
-                       }
-    
-       }
+        print("parameters-------\(String(describing: parameters))")
+        
+        Alamofire.request(urlString, method: .post, parameters: parameters as? Parameters).responseJSON
+        {
+            response in
+            
+            switch(response.result) {
+            case .success(_):
+                if let data = response.result.value {
+                    
+                    let JSON = data as! NSDictionary
+                    // print(JSON)
+                    
+                    var strSuccess : String!
+                    strSuccess = JSON["status"]as Any as? String
+                    
+                    var strSuccessAlert : String!
+                    strSuccessAlert = JSON["msg"]as Any as? String
+                    
+                    if strSuccess == "success" //true
+                    {
+                        
+                        var ar : NSArray!
+                        ar = (JSON["data"] as! Array<Any>) as NSArray
+                        self.arrSelectBank = (ar as! Array<Any>)
+                        
+                        //self.arrListOfAllCards = self.arrListOfSavedCards
+                        
+                        
+                        
+                        
+                        ERProgressHud.sharedInstance.hide()
+                        
+                    }
+                    else
+                    {
+                        // self.indicator.stopAnimating()
+                        // self.enableService()
+                        CRNotifications.showNotification(type: CRNotifications.error, title: "Error!", message:strSuccessAlert, dismissDelay: 1.5, completion:{})
+                        ERProgressHud.sharedInstance.hide()
+                    }
+                    
+                }
+                
+            case .failure(_):
+                print("Error message:\(String(describing: response.result.error))")
+                // self.indicator.stopAnimating()
+                // self.enableService()
+                ERProgressHud.sharedInstance.hide()
+                
+                let alertController = UIAlertController(title: nil, message: SERVER_ISSUE_MESSAGE_ONE+"\n"+SERVER_ISSUE_MESSAGE_TWO, preferredStyle: .actionSheet)
+                
+                let okAction = UIAlertAction(title: "OK", style: UIAlertAction.Style.default) {
+                    UIAlertAction in
+                    NSLog("OK Pressed")
+                }
+                
+                alertController.addAction(okAction)
+                
+                self.present(alertController, animated: true, completion: nil)
+                
+                break
+            }
+        }
+        
+    }
     
     
     // MARK:- ADD BANK ACCOUNT
@@ -352,8 +352,8 @@ class AddBankAccount: UIViewController,UITextFieldDelegate {
                     if strSuccess == "success" {
                         ERProgressHud.sharedInstance.hide()
                         
-                         CRNotifications.showNotification(type: CRNotifications.success, title: "Success!", message:strSuccessAlert, dismissDelay: 1.5, completion:{})
- 
+                        CRNotifications.showNotification(type: CRNotifications.success, title: "Success!", message:strSuccessAlert, dismissDelay: 1.5, completion:{})
+                        
                         self.navigationController?.popViewController(animated: true)
                         
                     }
@@ -420,21 +420,21 @@ class AddBankAccount: UIViewController,UITextFieldDelegate {
                     print(JSON)
                     
                     var strSuccess : String!
-                    strSuccess = JSON["status"]as Any as? String
+                    strSuccess = JSON["status"] as Any as? String
                     
                     // var strSuccessAlert : String!
                     // strSuccessAlert = JSON["msg"]as Any as? String
                     
                     if strSuccess == "success" {
                         
-                         var strSuccessAlert : String!
-                         strSuccessAlert = JSON["stripeBankAccountNo"]as Any as? String
+                        var strSuccessAlert : String!
+                        strSuccessAlert = JSON["stripeBankAccountNo"]as Any as? String
                         
                         self.save_bank_Stripe_Details_to_our_server_wb(strStripeBankAccountNumber: strSuccessAlert)
                         
                         
                         
-                       // 110000000
+                        // 110000000
                     }
                     else {
                         // self.indicator.stopAnimating()
@@ -478,8 +478,8 @@ class AddBankAccount: UIViewController,UITextFieldDelegate {
         var parameters:Dictionary<AnyHashable, Any>!
         
         if let person = UserDefaults.standard.value(forKey: "keyLoginFullData") as? [String:Any] {
-                 let x : Int = (person["userId"] as! Int)
-                let myString = String(x)
+            let x : Int = (person["userId"] as! Int)
+            let myString = String(x)
             
             parameters = [
                 "action"            : "editbankaccount",
@@ -519,7 +519,7 @@ class AddBankAccount: UIViewController,UITextFieldDelegate {
                         self.addBankAccountWB()
                         
                         
-                       // 110000000
+                        // 110000000
                     }
                     else {
                         // self.indicator.stopAnimating()
@@ -553,9 +553,6 @@ class AddBankAccount: UIViewController,UITextFieldDelegate {
         
     }
 }
-
-
-
 
 extension AddBankAccount: BottomPopupDelegate {
     

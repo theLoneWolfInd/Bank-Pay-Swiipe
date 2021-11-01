@@ -700,31 +700,36 @@ class AddMoney: UIViewController,UITextFieldDelegate,UIPickerViewDelegate,UIPick
      @Field("bankaccountId") String bankaccountId
      */
     // saveTransactionId
+    
+    
+    
+    
     //MARK:- ADD MONEY
     @objc func addMoneyWB() {
         // ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
-         
+        
         let defaults = UserDefaults.standard
         let userName = defaults.string(forKey: "KeyLoginPersonal")
         if userName == "loginViaPersonal" {
             // personal user
-             ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
+            ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
             
         }
         else {
-             ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
+            ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
         }
         
-        // let urlString = BASE_URL_SWIIPE
         
-        let urlString = "http://demo2.evirtualservices.com/swiipe/site/BMPstrippayment/charge.php"
+        let urlString = payment_url_for_add_money
+        
+         
         
         var parameters:Dictionary<AnyHashable, Any>!
-           
-         if let person = UserDefaults.standard.value(forKey: "keyLoginFullData") as? [String:Any]
-         {
-             let x : Int = (person["userId"] as! Int)
-             let myString = String(x)
+        
+        if let person = UserDefaults.standard.value(forKey: "keyLoginFullData") as? [String:Any]
+        {
+            let x : Int = (person["userId"] as! Int)
+            let myString = String(x)
             
             let myString23 = String(txtAmount.text!)
             let myDouble = Double(myString23)
@@ -738,101 +743,99 @@ class AddMoney: UIViewController,UITextFieldDelegate,UIPickerViewDelegate,UIPick
                 ]
             }
             else
-            if strGetBankOrCard == "BANK" {
-                parameters = [
-                    "action"         : "addmoney",
-                    "userId"         : String(myString),
-                    "transactionID"   : String(saveTransactionId),
-                    "amount"         : String(""),
-                    "transactionBy"   : String(strGetBankOrCard),
-                    "cardId"         : "",
-                    "bankaccountId"   : String(saveBankAccountId)
-                ]
+                if strGetBankOrCard == "BANK" {
+                    parameters = [
+                        "action"            : "addmoney",
+                        "userId"            : String(myString),
+                        "transactionID"     : String(saveTransactionId),
+                        "amount"            : String(""),
+                        "transactionBy"     : String(strGetBankOrCard),
+                        "cardId"            : "",
+                        "bankaccountId"     : String(saveBankAccountId)
+                    ]
+                }
+        }
+        
+        print("parameters-------\(String(describing: parameters))")
+        
+        Alamofire.request(urlString, method: .post, parameters: parameters as? Parameters).responseJSON {
+            response in
+            
+            switch(response.result) {
+            case .success(_):
+                if let data = response.result.value {
+                    
+                    
+                    let JSON = data as! NSDictionary
+                    print(JSON)
+                    
+                    /*
+                     amount = 200;
+                     captured = 1;
+                     card = "card_1G6Fn2Bnk7ygV50qSFP8tCIG";
+                     currency = usd;
+                     paymentResponseString = "{\"tokeId\":\"ch_1G6FnEBnk7ygV50qPQy9Iztk\",\"balance_transaction\":\"txn_1G6FnEBnk7ygV50qKlIjs4bg\",\"captured\":\"1\",\"description\":\"Payment from app by User :74\",\"status\":\"succeeded\"}";
+                     status = Success;
+                     tokeId = "ch_1G6FnEBnk7ygV50qPQy9Iztk";
+                     */
+                    
+                    var strSuccess : String!
+                    strSuccess = JSON["status"]as Any as? String
+                    
+                    var strSuccessAlert : String!
+                    strSuccessAlert = JSON["msg"]as Any as? String
+                    
+                    if strSuccess == "success" {
+                        // ERProgressHud.sharedInstance.hide()
+                        
+                        self.myStripeTokeinIdIs = ""
+                        
+                        var dict: Dictionary<AnyHashable, Any>
+                        dict = JSON["data"] as! Dictionary<AnyHashable, Any>
+                        
+                        var strSuccess2 : String!
+                        strSuccess2 = dict["card"] as Any as? String
+                        
+                        // var strSuccessAlert2 : String!
+                        // strSuccessAlert2 = JSON["card"]as Any as? String
+                        
+                        self.sendFinalPaymentToOurSerber(strCardResponse: strSuccess2)
+                        
+                    }
+                    else
+                    {
+                        // self.indicator.stopAnimating()
+                        // self.enableService()
+                        CRNotifications.showNotification(type: CRNotifications.error, title: "Error!", message:strSuccessAlert, dismissDelay: 1.5, completion:{})
+                        ERProgressHud.sharedInstance.hide()
+                    }
+                    
+                }
+                
+            case .failure(_):
+                print("Error message:\(String(describing: response.result.error))")
+                // self.indicator.stopAnimating()
+                // self.enableService()
+                ERProgressHud.sharedInstance.hide()
+                
+                let alertController = UIAlertController(title: nil, message: SERVER_ISSUE_MESSAGE_ONE+"\n"+SERVER_ISSUE_MESSAGE_TWO, preferredStyle: .actionSheet)
+                
+                let okAction = UIAlertAction(title: "OK", style: UIAlertAction.Style.default) {
+                    UIAlertAction in
+                    NSLog("OK Pressed")
+                }
+                
+                alertController.addAction(okAction)
+                
+                self.present(alertController, animated: true, completion: nil)
+                
+                break
             }
         }
-                
-                   print("parameters-------\(String(describing: parameters))")
-                   
-                   Alamofire.request(urlString, method: .post, parameters: parameters as? Parameters).responseJSON
-                       {
-                           response in
-               
-                           switch(response.result) {
-                           case .success(_):
-                              if let data = response.result.value {
-
-                               
-                               let JSON = data as! NSDictionary
-                                   print(JSON)
-                               
-                                /*
-                                 amount = 200;
-                                 captured = 1;
-                                 card = "card_1G6Fn2Bnk7ygV50qSFP8tCIG";
-                                 currency = usd;
-                                 paymentResponseString = "{\"tokeId\":\"ch_1G6FnEBnk7ygV50qPQy9Iztk\",\"balance_transaction\":\"txn_1G6FnEBnk7ygV50qKlIjs4bg\",\"captured\":\"1\",\"description\":\"Payment from app by User :74\",\"status\":\"succeeded\"}";
-                                 status = Success;
-                                 tokeId = "ch_1G6FnEBnk7ygV50qPQy9Iztk";
-                                 */
-                                
-                               var strSuccess : String!
-                               strSuccess = JSON["status"]as Any as? String
-                               
-                               var strSuccessAlert : String!
-                               strSuccessAlert = JSON["msg"]as Any as? String
-                               
-                               if strSuccess == "success" //true
-                               {
-                                // ERProgressHud.sharedInstance.hide()
-                                
-                                self.myStripeTokeinIdIs = ""
-                                
-                                var dict: Dictionary<AnyHashable, Any>
-                                dict = JSON["data"] as! Dictionary<AnyHashable, Any>
-                                
-                                var strSuccess2 : String!
-                                strSuccess2 = dict["card"] as Any as? String
-                                
-                                // var strSuccessAlert2 : String!
-                                // strSuccessAlert2 = JSON["card"]as Any as? String
-                                
-                                 self.sendFinalPaymentToOurSerber(strCardResponse: strSuccess2)
-                                
-                               }
-                               else
-                               {
-                                   // self.indicator.stopAnimating()
-                                   // self.enableService()
-                                CRNotifications.showNotification(type: CRNotifications.error, title: "Error!", message:strSuccessAlert, dismissDelay: 1.5, completion:{})
-                                   ERProgressHud.sharedInstance.hide()
-                               }
-                               
-                           }
-
-                           case .failure(_):
-                               print("Error message:\(String(describing: response.result.error))")
-                               // self.indicator.stopAnimating()
-                               // self.enableService()
-                               ERProgressHud.sharedInstance.hide()
-                               
-                               let alertController = UIAlertController(title: nil, message: SERVER_ISSUE_MESSAGE_ONE+"\n"+SERVER_ISSUE_MESSAGE_TWO, preferredStyle: .actionSheet)
-                               
-                               let okAction = UIAlertAction(title: "OK", style: UIAlertAction.Style.default) {
-                                       UIAlertAction in
-                                       NSLog("OK Pressed")
-                                   }
-                               
-                               alertController.addAction(okAction)
-                               
-                               self.present(alertController, animated: true, completion: nil)
-                               
-                               break
-                            }
-                       }
         
         
-    
-       }
+        
+    }
     @objc func sendFinalPaymentToOurSerber(strCardResponse:String) {
         /*
         
@@ -1200,7 +1203,7 @@ extension AddMoney: BottomPopupDelegate {
         }
         else
         {
-            print("Never went to that page.")
+            print("Never went to that page buddy.")
         }
         
         

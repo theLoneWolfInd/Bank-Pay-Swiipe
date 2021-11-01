@@ -13,7 +13,15 @@ import RSLoadingView
 // let BASE_URL_SWIIPE = "http://demo2.evirtualservices.com/swiipe/site/services/index"
 let BASE_URL_SWIIPE = "http://app.swiipe-pay.com/site/services/index"
 
+
+
 let base_url_create_Stripe_customer = "http://app.swiipe-pay.com/site/webroot/strip_master/charge_bank.php"
+
+
+
+let payment_url_for_add_money = "http://app.swiipe-pay.com/site/webroot/BMPstrippayment/charge_test.php"
+// let payment_url_for_add_money = "http://app.swiipe-pay.com/site/webroot/BMPstrippayment/charge.php"
+
 
 // 0 ,//// 179 , 138
 

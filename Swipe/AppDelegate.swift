@@ -21,8 +21,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         FirebaseApp.configure()
         
-         Stripe.setDefaultPublishableKey("pk_live_phy6oQoNq0ZRjTKWpI668OD9004EN4r4tr")
-        // Stripe.setDefaultPublishableKey("pk_test_P0sek3JBlehtPxunz63NZgoc00Pl3WDYs1")
+        
+        
+        
+         // Stripe.setDefaultPublishableKey("pk_live_phy6oQoNq0ZRjTKWpI668OD9004EN4r4tr")
+         Stripe.setDefaultPublishableKey("pk_test_P0sek3JBlehtPxunz63NZgoc00Pl3WDYs1")
+        
+        
+        
+        
+        
         
         self.registerForRemoteNotifications(application)
         

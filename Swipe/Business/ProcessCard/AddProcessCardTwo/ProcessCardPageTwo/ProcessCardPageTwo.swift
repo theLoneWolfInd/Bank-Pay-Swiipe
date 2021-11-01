@@ -18,6 +18,9 @@ class ProcessCardPageTwo: UIViewController , UITextFieldDelegate {
 
     var arrProcessingFee:NSArray!
     
+    var str_get_only_processing_fee:String! = "0"
+    var str_get_only_total_price:String! = "0"
+    
     var arrListOfProcessingFee:NSMutableArray! = []
     
     // get value from previous page
@@ -422,36 +425,62 @@ class ProcessCardPageTwo: UIViewController , UITextFieldDelegate {
         
         print(self.arrListOfProcessingFee as Any)
         
-        let array: [String] = self.arrListOfProcessingFee.copy() as! [String]
-        
-        RPicker.selectOption(title: "Processing Fee", cancelText: "Cancel", dataArray: array, selectedIndex: 0) {[] (selctedText, atIndex) in
-            // TODO: Your implementation for selection
-            // self!.lblProcessingFees.text = selctedText + " selcted at \(atIndex)"
+        if self.txtEnterAmount.text == "" {
             
-            // self!.lblProcessingFees.text = selctedText
+            let alert = UIAlertController(title: "Alert", message: "Please enter amount.",preferredStyle: .alert)
+
+            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: {(_: UIAlertAction!) in
+                                            
+                                             
+            }))
+            self.present(alert, animated: true, completion: nil)
             
-            // self!.lblCARDPROCESSGINFEES.text = selctedText+" %"
+        } else {
+           
+            let array: [String] = self.arrListOfProcessingFee.copy() as! [String]
             
-            // self!.saveCardProcessingFees = selctedText
-            
-            /*self!.lblProcessingFees.text = "Processing Fees ("+selctedText+"%):"
-            self!.lblCARDPROCESSGINFEES.text = selctedText+" %"
-            
-            self!.saveCardProcessingFees = selctedText*/
-            
-            self.lblCARDPROCESSGINFEES.text = selctedText+" %"
-            
-            // calculate percentage
-            let doubleProcessingfee = Double(selctedText)!/100
-            print(doubleProcessingfee as Any)
-            
-            self.lblProcessingFees.text = "Processing Fees ("+String(doubleProcessingfee)+"%):"
-            self.lblChangeProcessingFee.text = "$"+String(doubleProcessingfee)
-            
-            let calculateTotalAmount = doubleProcessingfee+Double(self.txtEnterAmount.text!)!
-            self.lblTotalAmountUs.text = "$"+String(calculateTotalAmount)
+            RPicker.selectOption(title: "Processing Fee", cancelText: "Cancel", dataArray: array, selectedIndex: 0) {[] (selctedText, atIndex) in
+                // TODO: Your implementation for selection
+                // self!.lblProcessingFees.text = selctedText + " selcted at \(atIndex)"
+                
+                // self!.lblProcessingFees.text = selctedText
+                
+                // self!.lblCARDPROCESSGINFEES.text = selctedText+" %"
+                
+                // self!.saveCardProcessingFees = selctedText
+                
+                /*self!.lblProcessingFees.text = "Processing Fees ("+selctedText+"%):"
+                self!.lblCARDPROCESSGINFEES.text = selctedText+" %"
+                
+                self!.saveCardProcessingFees = selctedText*/
+                
+                self.str_get_only_processing_fee = selctedText
+                self.lblCARDPROCESSGINFEES.text = selctedText+" %"
+                
+                
+                
+                // calculate percentage
+                let doubleProcessingfee = Double(selctedText)!/100
+                print(doubleProcessingfee as Any)
+                
+                
+                
+                
+                
+                self.lblInvoiceAmount.text = "$"+String(self.txtEnterAmount.text!)
+                
+                self.lblProcessingFees.text = "Processing Fees ("+String(doubleProcessingfee)+"%):"
+                self.lblChangeProcessingFee.text = "$"+String(doubleProcessingfee)
+                
+                let calculateTotalAmount = doubleProcessingfee+Double(self.txtEnterAmount.text!)!
+                self.lblTotalAmountUs.text = "$"+String(calculateTotalAmount)
+                
+                self.str_get_only_total_price = String(calculateTotalAmount)
+            }
             
         }
+        
+       
         
     }
     
@@ -476,23 +505,26 @@ class ProcessCardPageTwo: UIViewController , UITextFieldDelegate {
                 CRNotifications.showNotification(type: CRNotifications.error, title: "Error!", message:"Please enter amount.", dismissDelay: 1.5, completion:{})
             }
             else {
-            let settingsVCId = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "AddProcessCardTwoId") as? AddProcessCardTwo
-            settingsVCId!.amountIs = myfinalAmountofCardIs//self.txtEnterAmount.text
+                let settingsVCId = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "AddProcessCardTwoId") as? AddProcessCardTwo
+                settingsVCId!.amountIs = myfinalAmountofCardIs//self.txtEnterAmount.text
                 settingsVCId!.percentageIs = self.saveCardProcessingFees
-            self.navigationController?.pushViewController(settingsVCId!, animated: true)
+                self.navigationController?.pushViewController(settingsVCId!, animated: true)
             }
             
         }
         else if segmentControls.selectedSegmentIndex == 1 {
-
+            
             if txtEnterAmount.text == "" {
+                
                 CRNotifications.showNotification(type: CRNotifications.error, title: "Error!", message:"Please enter amount.", dismissDelay: 1.5, completion:{})
-            }
-            else {
-            let settingsVCId = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "AddProcessCardTwoId") as? AddProcessCardTwo
-            settingsVCId!.amountIs = self.txtEnterAmount.text
-                settingsVCId!.percentageIs = "0"
-            self.navigationController?.pushViewController(settingsVCId!, animated: true)
+                
+            } else {
+                
+                let settingsVCId = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "AddProcessCardTwoId") as? AddProcessCardTwo
+                settingsVCId!.amountIs = self.str_get_only_total_price // self.lblTotalAmountUs.text
+                settingsVCId!.percentageIs = self.str_get_only_processing_fee
+                self.navigationController?.pushViewController(settingsVCId!, animated: true)
+                
             }
             
         }

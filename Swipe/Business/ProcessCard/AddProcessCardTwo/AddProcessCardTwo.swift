@@ -11,7 +11,7 @@ import Alamofire
 import SwiftyJSON
 import CoreLocation
 import CRNotifications
-
+import Stripe
 import CardScan
 
 
@@ -614,126 +614,273 @@ class AddProcessCardTwo: UIViewController,UITextFieldDelegate,ScanEvents, ScanDe
 */
 
     
+    /*
+     
+     */
     
-    @objc func addWB() {
+    @objc func charge_amount_before_submit_to_Server(str_stripe_token:String) {
+        // ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
         
-               // ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
-               
-            let defaults = UserDefaults.standard
-            let userName = defaults.string(forKey: "KeyLoginPersonal")
-            if userName == "loginViaPersonal" {
-                // personal user
-                 ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
-                
-            }
-            else {
-                 ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
-            }
-            let urlString = BASE_URL_SWIIPE
-                   
-            var parameters:Dictionary<AnyHashable, Any>!
+        let defaults = UserDefaults.standard
+        let userName = defaults.string(forKey: "KeyLoginPersonal")
+        if userName == "loginViaPersonal" {
+            // personal user
+            ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
             
-             let indexPath = IndexPath(row: 0, section: 0)
-             let cell = self.tbleView.cellForRow(at: indexPath) as! AddProcessCardTwoTableCell
+        }
+        else {
+            ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
+        }
+        
+        
+        let urlString = payment_url_for_add_money
+        
+        var parameters:Dictionary<AnyHashable, Any>!
+        
+        if let person = UserDefaults.standard.value(forKey: "keyLoginFullData") as? [String:Any] {
             
-            if let person = UserDefaults.standard.value(forKey: "keyLoginFullData") as? [String:Any]
-            {
-                let x : Int = (person["userId"] as! Int)
-                let myString = String(x)
-                
-                       parameters = [
-                           "action"        : "addcardprocessing",
-                           "vendorId"           : String(myString),
-                           "TransactionID"      : "735451245",
-                           "Phone"              : String(cell.txtPhoneNumber.text!),
-                           "email"              : String(cell.txtEmailAddress.text!),
-                           "cardNo"             : String(cell.txtCreditCardNumber.text!),
-                           "nameOnCard"        : String(cell.txtNameOnCard.text!),
-                           "percentage"        : String(percentageIs),
-                           "processingCharge"   : String(percentageIs),
-                           "Amount"             : String(cell.txtEnterEmount.text!),
-                           "Total"          : String(amountIs),
-                       ]
-            }
+            let x : Int = (person["userId"] as! Int)
+            let myString = String(x)
+            
+            let myString23 = String(amountIs)
+            // let myDouble = Double(myString23)
+            
+            let fullNameArr = String(amountIs).components(separatedBy: ".")
+
+            // print(fullNameArr as Any)
+            let name    = fullNameArr[0]
+            let surname = fullNameArr[1]
+            
+            let last4 = surname.suffix(2)
+            // print(last4 as Any)
+            
+            let add_filter_value = String(name)+"."+String(last4)
+            // print(add_filter_value as Any)
+            
+            
+            let double_string = Double(add_filter_value)
+            
+            let multiple_value_by_100 = double_string!*Double(100)
+            
+            // print(multiple_value_by_100 as Any)
+            
+            // print(multiple_value_by_100.clean)
+            
+            let remove_value_after_Decimal = String(multiple_value_by_100.clean)
+            
+            parameters = [
+                "action"    : "chargerAmount",
+                "userId"    : String(myString),
+                "tokenId"   : String(str_stripe_token),
+                "amount"    : remove_value_after_Decimal
+            ]
+            
+        }
+        
+        print("parameters-------\(String(describing: parameters))")
+        
+        Alamofire.request(urlString, method: .post, parameters: parameters as? Parameters).responseJSON {
+            response in
+            
+            switch(response.result) {
+            case .success(_):
+                if let data = response.result.value {
                     
-                       print("parameters-------\(String(describing: parameters))")
-                       
-                       Alamofire.request(urlString, method: .post, parameters: parameters as? Parameters).responseJSON
-                           {
-                               response in
-                   
-                               switch(response.result) {
-                               case .success(_):
-                                  if let data = response.result.value {
-
-                                   
-                                   let JSON = data as! NSDictionary
-                                       print(JSON)
-                                   
-                                   var strSuccess : String!
-                                   strSuccess = JSON["status"]as Any as? String
-                                   
-                                   var strSuccessAlert : String!
-                                   strSuccessAlert = JSON["msg"]as Any as? String
-                                   
-                                   if strSuccess == "success" //true
-                                   {
-                                    // var strPercentage : String!
-                                    // strPercentage = JSON["percentage"]as Any as? String
-                                    // print(strPercentage as Any)
-                                    // self.strSavePercentage = strPercentage
-                                    
-                                    // let indexPath = IndexPath(row: 0, section: 0)
-                                    // let cell = self.tbleView.cellForRow(at: indexPath) as! AddProcessCardTableCell
-                                    
-                                    // cell.lblInvoiceAmount.text = "INVOICE AMOUNT : $0"
-                                    // cell.lblProcessingFee.text = "PROCESSING FEE( 0% ): $0"
-                                    // cell.lblTotalAmount.text = "TOTAL AMOUNT : $0"
-                                    
-                                    // self.navigationController?.popViewController(animated: true)
-                                    
-                                    
-                                    
-                                    
-                                    let settingsVCId = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "ProcessingCardListId") as? ProcessingCardList
-                                    self.navigationController?.pushViewController(settingsVCId!, animated: true)
-                                    
-                                    ERProgressHud.sharedInstance.hide()
-                                   }
-                                   else
-                                   {
-                                       // self.indicator.stopAnimating()
-                                       // self.enableService()
-                                    CRNotifications.showNotification(type: CRNotifications.error, title: "Error!", message:strSuccessAlert, dismissDelay: 1.5, completion:{})
-                                       ERProgressHud.sharedInstance.hide()
-                                   }
-                                   
-                               }
-
-                               case .failure(_):
-                                   print("Error message:\(String(describing: response.result.error))")
-                                   // self.indicator.stopAnimating()
-                                   // self.enableService()
-                                   ERProgressHud.sharedInstance.hide()
-                                   
-                                   let alertController = UIAlertController(title: nil, message: SERVER_ISSUE_MESSAGE_ONE+"\n"+SERVER_ISSUE_MESSAGE_TWO, preferredStyle: .actionSheet)
-                                   
-                                   let okAction = UIAlertAction(title: "OK", style: UIAlertAction.Style.default) {
-                                           UIAlertAction in
-                                           NSLog("OK Pressed")
-                                       }
-                                   
-                                   alertController.addAction(okAction)
-                                   
-                                   self.present(alertController, animated: true, completion: nil)
-                                   
-                                   break
-                                }
-                           }
-            
-            
+                    
+                    let JSON = data as! NSDictionary
+                    print(JSON)
+                    
+                    /*
+                     amount = 200;
+                     captured = 1;
+                     card = "card_1G6Fn2Bnk7ygV50qSFP8tCIG";
+                     currency = usd;
+                     paymentResponseString = "{\"tokeId\":\"ch_1G6FnEBnk7ygV50qPQy9Iztk\",\"balance_transaction\":\"txn_1G6FnEBnk7ygV50qKlIjs4bg\",\"captured\":\"1\",\"description\":\"Payment from app by User :74\",\"status\":\"succeeded\"}";
+                     status = Success;
+                     tokeId = "ch_1G6FnEBnk7ygV50qPQy9Iztk";
+                     */
+                    
+                    var strSuccess : String!
+                    strSuccess = JSON["status"]as Any as? String
+                    
+                    var strSuccessAlert : String!
+                    strSuccessAlert = JSON["msg"]as Any as? String
+                    
+                    if strSuccess == "success" {
+                        // ERProgressHud.sharedInstance.hide()
+                        
+                        // self.myStripeTokeinIdIs = ""
+                        
+                        // var dict: Dictionary<AnyHashable, Any>
+                        // dict = JSON["data"] as! Dictionary<AnyHashable, Any>
+                        
+                        // var strSuccess2 : String!
+                        // strSuccess2 = dict["card"] as Any as? String
+                        
+                        var dict: Dictionary<AnyHashable, Any>
+                        dict = JSON["data"] as! Dictionary<AnyHashable, Any>
+                        
+                         var strSuccessAlert2 : String!
+                         strSuccessAlert2 = dict["tokeId"]as Any as? String
+                        
+                        // self.sendFinalPaymentToOurSerber(strCardResponse: strSuccess2)
+                        
+                        
+                        self.addWB(str_tansaction_fee: strSuccessAlert2)
+                    }
+                    else
+                    {
+                        // self.indicator.stopAnimating()
+                        // self.enableService()
+                        CRNotifications.showNotification(type: CRNotifications.error, title: "Error!", message:strSuccessAlert, dismissDelay: 1.5, completion:{})
+                        ERProgressHud.sharedInstance.hide()
+                    }
+                    
+                }
+                
+            case .failure(_):
+                print("Error message:\(String(describing: response.result.error))")
+                // self.indicator.stopAnimating()
+                // self.enableService()
+                ERProgressHud.sharedInstance.hide()
+                
+                let alertController = UIAlertController(title: nil, message: SERVER_ISSUE_MESSAGE_ONE+"\n"+SERVER_ISSUE_MESSAGE_TWO, preferredStyle: .actionSheet)
+                
+                let okAction = UIAlertAction(title: "OK", style: UIAlertAction.Style.default) {
+                    UIAlertAction in
+                    NSLog("OK Pressed")
+                }
+                
+                alertController.addAction(okAction)
+                
+                self.present(alertController, animated: true, completion: nil)
+                
+                break
+            }
+        }
         
-   }
+        
+        
+    }
+    
+    @objc func addWB(str_tansaction_fee:String) {
+        
+        // ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
+        
+        let defaults = UserDefaults.standard
+        let userName = defaults.string(forKey: "KeyLoginPersonal")
+        if userName == "loginViaPersonal" {
+            // personal user
+            ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
+            
+        }
+        else {
+            
+            ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
+            
+        }
+        
+        let urlString = BASE_URL_SWIIPE
+        
+        var parameters:Dictionary<AnyHashable, Any>!
+        
+        let indexPath = IndexPath(row: 0, section: 0)
+        let cell = self.tbleView.cellForRow(at: indexPath) as! AddProcessCardTwoTableCell
+        
+        if let person = UserDefaults.standard.value(forKey: "keyLoginFullData") as? [String:Any]
+        {
+            let x : Int = (person["userId"] as! Int)
+            let myString = String(x)
+            
+            parameters = [
+                "action"             : "addcardprocessing",
+                "vendorId"           : String(myString),
+                "TransactionID"      : String(str_tansaction_fee),
+                "Phone"              : String(cell.txtPhoneNumber.text!),
+                "email"              : String(cell.txtEmailAddress.text!),
+                "cardNo"             : String(cell.txtCreditCardNumber.text!),
+                "nameOnCard"         : String(cell.txtNameOnCard.text!),
+                "percentage"         : String(percentageIs),
+                "processingCharge"   : String(percentageIs),
+                "Amount"             : String(cell.txtEnterEmount.text!),
+                "Total"              : String(amountIs),
+            ]
+        }
+        
+        print("parameters-------\(String(describing: parameters))")
+        
+        Alamofire.request(urlString, method: .post, parameters: parameters as? Parameters).responseJSON {
+            response in
+            
+            switch(response.result) {
+            case .success(_):
+                if let data = response.result.value {
+                    
+                    
+                    let JSON = data as! NSDictionary
+                    print(JSON)
+                    
+                    var strSuccess : String!
+                    strSuccess = JSON["status"]as Any as? String
+                    
+                    var strSuccessAlert : String!
+                    strSuccessAlert = JSON["msg"]as Any as? String
+                    
+                    if strSuccess == "success" {
+                        
+                        // var strPercentage : String!
+                        // strPercentage = JSON["percentage"]as Any as? String
+                        // print(strPercentage as Any)
+                        // self.strSavePercentage = strPercentage
+                        
+                        // let indexPath = IndexPath(row: 0, section: 0)
+                        // let cell = self.tbleView.cellForRow(at: indexPath) as! AddProcessCardTableCell
+                        
+                        // cell.lblInvoiceAmount.text = "INVOICE AMOUNT : $0"
+                        // cell.lblProcessingFee.text = "PROCESSING FEE( 0% ): $0"
+                        // cell.lblTotalAmount.text = "TOTAL AMOUNT : $0"
+                        
+                        // self.navigationController?.popViewController(animated: true)
+                        
+                        let settingsVCId = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "ProcessingCardListId") as? ProcessingCardList
+                        self.navigationController?.pushViewController(settingsVCId!, animated: true)
+                        
+                        ERProgressHud.sharedInstance.hide()
+                    }
+                    else
+                    {
+                        // self.indicator.stopAnimating()
+                        // self.enableService()
+                        CRNotifications.showNotification(type: CRNotifications.error, title: "Error!", message:strSuccessAlert, dismissDelay: 1.5, completion:{})
+                        ERProgressHud.sharedInstance.hide()
+                    }
+                    
+                }
+                
+            case .failure(_):
+                print("Error message:\(String(describing: response.result.error))")
+                // self.indicator.stopAnimating()
+                // self.enableService()
+                ERProgressHud.sharedInstance.hide()
+                
+                let alertController = UIAlertController(title: nil, message: SERVER_ISSUE_MESSAGE_ONE+"\n"+SERVER_ISSUE_MESSAGE_TWO, preferredStyle: .actionSheet)
+                
+                let okAction = UIAlertAction(title: "OK", style: UIAlertAction.Style.default) {
+                    UIAlertAction in
+                    NSLog("OK Pressed")
+                }
+                
+                alertController.addAction(okAction)
+                
+                self.present(alertController, animated: true, completion: nil)
+                
+                break
+            }
+        }
+        
+        
+        
+    }
     
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -742,8 +889,8 @@ class AddProcessCardTwo: UIViewController,UITextFieldDelegate,ScanEvents, ScanDe
     }
 
 }
-extension AddProcessCardTwo: UITableViewDataSource
-        {
+
+extension AddProcessCardTwo: UITableViewDataSource {
             func numberOfSections(in tableView: UITableView) -> Int
             {
                 return 1
@@ -826,20 +973,48 @@ extension AddProcessCardTwo: UITableViewDataSource
             CRNotifications.showNotification(type: CRNotifications.error, title: "Error!", message:"Phone number should not be Empty", dismissDelay: 1.5, completion:{})
         }*/
         else {
-            addWB()
-            /*
-            let settingsVCId = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "ProcessCardPageTwoId") as? ProcessCardPageTwo
-            // settingsVCId!.strGetPriceFromAddProcessCard = cell.txtEnterEmount.text
+            // addWB()
+            ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
             
-            settingsVCId!.strGetNameOnCardFromAddProcessCard = cell.txtNameOnCard.text
-            settingsVCId!.strGetEmailFromAddProcessCard = cell.txtEmailAddress.text
-            settingsVCId!.strGetCreditCardNumberFromAddProcessCard = cell.txtCreditCardNumber.text
-            settingsVCId!.strGetExpDateFromAddProcessCard = cell.txtExpDate.text
-            settingsVCId!.strGetCVVFromAddProcessCard = cell.txtCVV.text
-            settingsVCId!.strGetZipcodeFromAddProcessCard = cell.txtZipCode.text
-            settingsVCId!.strGetPhoneNumberFromAddProcessCard = cell.txtPhoneNumber.text
-            self.navigationController?.pushViewController(settingsVCId!, animated: true)
- */
+            let indexPath = IndexPath(row: 0, section: 0)
+            let cell = self.tbleView.cellForRow(at: indexPath) as! AddProcessCardTwoTableCell
+            
+            let cardParams = STPCardParams()
+            
+            let fullNameArr = cell.txtExpDate.text!.components(separatedBy: "/")
+
+            // print(fullNameArr as Any)
+            let name    = fullNameArr[0]
+            let surname = fullNameArr[1]
+            
+            let string_month = String(name)
+            let string_year = String(surname)
+            
+            cardParams.number = String(cell.txtCreditCardNumber.text!)
+            cardParams.expMonth = UInt(string_month)!
+            cardParams.expYear = UInt(string_year)!//25
+            cardParams.cvc = String(cell.txtCVV.text!)
+
+            print(cardParams as Any)
+            
+                // Pass it to STPAPIClient to create a Token
+            STPAPIClient.shared().createToken(withCard: cardParams) { token, error in
+                guard let token = token else {
+                    // Handle the error
+                    ERProgressHud.sharedInstance.hide()
+                    return
+                }
+                let tokenID = token.tokenId
+                print(tokenID)
+                // self.myStripeTokeinIdIs = tokenID
+                // ERProgressHud.sharedInstance.hide()
+                
+                self.charge_amount_before_submit_to_Server(str_stripe_token: tokenID)
+                
+            }
+            
+            
+      
         }
         
     }
@@ -856,4 +1031,13 @@ extension AddProcessCardTwo: UITableViewDataSource
 
 extension AddProcessCardTwo: UITableViewDelegate {
             
+}
+
+
+
+extension Double {
+    var clean: String {
+       return self.truncatingRemainder(dividingBy: 1) == 0 ? String(format: "%.0f", self) : String(self)
+    }
+
 }
