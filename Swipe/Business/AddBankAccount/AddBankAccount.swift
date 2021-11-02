@@ -404,7 +404,8 @@ class AddBankAccount: UIViewController,UITextFieldDelegate {
                 "StripeCustomerId"  : (person["stripeCustomerNo"] as! String),
                 "accountNumber"     : String(txtBankAccountNumber.text!),
                 "accountHolderName" : String(txtBranch.text!),
-                "roughtingNo"       : String(txtBranchCode.text!)            ]
+                "roughtingNo"       : String(txtBranchCode.text!)
+            ]
         }
         
         print("parameters-------\(String(describing: parameters))")
@@ -432,14 +433,17 @@ class AddBankAccount: UIViewController,UITextFieldDelegate {
                         
                         self.save_bank_Stripe_Details_to_our_server_wb(strStripeBankAccountNumber: strSuccessAlert)
                         
-                        
-                        
                         // 110000000
                     }
                     else {
-                        // self.indicator.stopAnimating()
-                        // self.enableService()
-                        CRNotifications.showNotification(type: CRNotifications.error, title: "Error!", message:"Something went wrong. Please try again after sometime.", dismissDelay: 1.5, completion:{})
+                        
+                         var strSuccessAlert : String!
+                         strSuccessAlert = JSON["msg"]as Any as? String
+                        
+                        var strSuccessAlert2 : String!
+                        strSuccessAlert2 = JSON["status"]as Any as? String
+                        
+                        CRNotifications.showNotification(type: CRNotifications.error, title: String(strSuccessAlert2), message:String(strSuccessAlert), dismissDelay: 1.5, completion:{})
                         ERProgressHud.sharedInstance.hide()
                     }
                     

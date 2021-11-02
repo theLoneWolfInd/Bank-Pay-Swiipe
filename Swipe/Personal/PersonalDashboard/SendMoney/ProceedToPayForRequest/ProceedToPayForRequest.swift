@@ -135,9 +135,14 @@ class ProceedToPayForRequest: UIViewController, UITextFieldDelegate {
         
         if let person = UserDefaults.standard.value(forKey: "keyLoginFullData") as? [String:Any]
         {
-            let x : NSNumber = person["wallet"] as! NSNumber
-            self.lblTotalAmountInWallet.text = "$ "+"\(x)"
-            myCurrentBalance = "\(x)"
+            // let x : NSNumber = person["wallet"] as! NSNumber
+            // self.lblTotalAmountInWallet.text = "$ "+"\(x)"
+            // myCurrentBalance = "\(x)"
+            
+            let x : Double = person["wallet"] as! Double
+            let foo = x.rounded(digits: 2) // 3.142
+            self.lblTotalAmountInWallet.text = "$ "+"\(foo)"
+            self.myCurrentBalance = "\(foo)"
             
             /*
              let livingArea = person["wallet"] as? Int ?? 0
@@ -360,8 +365,12 @@ class ProceedToPayForRequest: UIViewController, UITextFieldDelegate {
         if let person = UserDefaults.standard.value(forKey: "keyLoginFullData") as? [String:Any] {
             
             
-            let x : NSNumber = person["wallet"] as! NSNumber
-            self.lblTotalAmountInWallet.text = "$ "+"\(x)"
+            // let x : NSNumber = person["wallet"] as! NSNumber
+            // self.lblTotalAmountInWallet.text = "$ "+"\(x)"
+            
+            let x : Double = person["wallet"] as! Double
+            let foo = x.rounded(digits: 2) // 3.142
+            self.lblTotalAmountInWallet.text = "$ "+"\(foo)"
             
             if self.lblTotalAmountInWallet.text == "0" {
                 print("balance is zero")
@@ -684,10 +693,14 @@ class ProceedToPayForRequest: UIViewController, UITextFieldDelegate {
                         {
                             
                             
-                            let x : NSNumber = person["wallet"] as! NSNumber
-                            self.lblTotalAmountInWallet.text = "$ "+"\(x)"
-                            self.myCurrentBalance = "\(x)"
+                            // let x : NSNumber = person["wallet"] as! NSNumber
+                            // self.lblTotalAmountInWallet.text = "$ "+"\(x)"
+                            // self.myCurrentBalance = "\(x)"
                             
+                            let x : Double = person["wallet"] as! Double
+                            let foo = x.rounded(digits: 2) // 3.142
+                            self.lblTotalAmountInWallet.text = "$ "+"\(foo)"
+                            self.myCurrentBalance = "\(foo)"
                             
                             /*
                              let livingArea = person["wallet"] as? Int ?? 0

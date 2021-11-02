@@ -457,6 +457,7 @@
                         <outlet property="btnBack" destination="LRe-gg-nYn" id="jkN-ak-hix"/>
                         <outlet property="btnSignUpClick" destination="VPJ-m4-We0" id="T1h-zt-qk1"/>
                         <outlet property="imgBGColor" destination="yAe-i3-n4P" id="OCZ-DL-DAM"/>
+                        <outlet property="img_login_screen" destination="f9w-UC-xcx" id="kok-zM-k95"/>
                         <outlet property="lblBusinessOrpersonal" destination="bNU-sE-qvI" id="QeH-uq-O8f"/>
                         <outlet property="lblHello" destination="mrb-2k-hmh" id="Snp-HM-Irr"/>
                         <outlet property="lblNavigationTitle" destination="cmT-CK-ThG" id="vXh-Mp-TkX"/>
@@ -7085,6 +7086,7 @@
                     <connections>
                         <outlet property="btnSignInClick" destination="vAq-xQ-aRX" id="Vxh-sm-Oeg"/>
                         <outlet property="imgBGColor" destination="3xp-La-Udz" id="08H-fx-tgi"/>
+                        <outlet property="img_registration_screen" destination="71T-Df-JFD" id="W6V-hu-28U"/>
                         <outlet property="lblBusinessOrpersonal" destination="KmF-QD-z0G" id="FGJ-lV-DGG"/>
                         <outlet property="tbleView" destination="8iW-aL-lvs" id="pc1-8u-dVd"/>
                         <outlet property="viewToRound" destination="4fK-dP-Qkd" id="9u8-cz-xel"/>

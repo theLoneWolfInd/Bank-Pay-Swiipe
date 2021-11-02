@@ -114,7 +114,7 @@ class Help: UIViewController,MFMailComposeViewControllerDelegate {
        
     
         @objc func callMethodClick() {
-            let url: NSURL = URL(string: "tel://8929963020")! as NSURL
+            let url: NSURL = URL(string: "tel://2065918818")! as NSURL
             UIApplication.shared.open(url as URL, options: [:], completionHandler: nil)
         }
     
@@ -131,9 +131,9 @@ class Help: UIViewController,MFMailComposeViewControllerDelegate {
            let mailComposerVC = MFMailComposeViewController()
            mailComposerVC.mailComposeDelegate = self // Extremely important to set the --mailComposeDelegate-- property, NOT the --delegate-- property
     
-            mailComposerVC.setToRecipients(["someone@somewhere.com"])
-            mailComposerVC.setSubject("I AM SUBJECT")
-            mailComposerVC.setMessageBody("I AM MESSAGE BODY", isHTML: false)
+            mailComposerVC.setToRecipients(["support@swiipepay.com"])
+            mailComposerVC.setSubject("")
+            mailComposerVC.setMessageBody("", isHTML: false)
     
             return mailComposerVC
         }

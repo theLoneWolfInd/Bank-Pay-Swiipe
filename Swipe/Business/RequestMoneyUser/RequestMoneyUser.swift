@@ -107,8 +107,14 @@ class RequestMoneyUser: UIViewController {
         self.navigationController?.setNavigationBarHidden(true, animated: true)
         
         if let person = UserDefaults.standard.value(forKey: "keyLoginFullData") as? [String:Any] {
-            let x : NSNumber = person["wallet"] as! NSNumber
-            self.lblTotalAmountInWallet.text = "$ "+"\(x)"
+            // let x : NSNumber = person["wallet"] as! NSNumber
+            // self.lblTotalAmountInWallet.text = "$ "+"\(x)"
+            
+            let x : Double = person["wallet"] as! Double
+            let foo = x.rounded(digits: 2)
+            self.lblTotalAmountInWallet.text = "$ "+"\(foo)"
+            
+            
         }
         else {
             // session expired. Please logout.

@@ -35,7 +35,7 @@ class GetStartedNowNew: UIViewController,UITextFieldDelegate {
         }
     }
     
-    
+    @IBOutlet weak var img_login_screen:UIImageView!
     
     
     
@@ -90,9 +90,12 @@ class GetStartedNowNew: UIViewController,UITextFieldDelegate {
         
         let defaults = UserDefaults.standard
         let userName = defaults.string(forKey: "KeyLoginPersonal")
+        
         if userName == "loginViaPersonal" {
+            
             if let person = UserDefaults.standard.value(forKey: "keyLoginFullData") as? [String:Any] {
-                // print(person as Any)
+                 print(person as Any)
+                
                 let indexPath = IndexPath.init(row: 0, section: 0)
                 let cell = self.tbleView.cellForRow(at: indexPath) as! GetStartedNowNewTableCell
                 
@@ -112,7 +115,11 @@ class GetStartedNowNew: UIViewController,UITextFieldDelegate {
             navigationBar.backgroundColor = NAVIGATION_PERSONAL_BACKGROUND_COLOR
             lblBusinessOrpersonal.text = "PERSONAL"
             imgBGColor.image = UIImage(named:"PloginBG")
+            
+            self.img_login_screen.image = UIImage(named:"new_personal_logo")
+            
             self.signInPersonalSubmitGradientColor()
+            
         }
         else {
             if let person = UserDefaults.standard.value(forKey: "keyLoginFullData") as? [String:Any] {
@@ -319,8 +326,8 @@ class GetStartedNowNew: UIViewController,UITextFieldDelegate {
                                var strSuccessAlert : String!
                                strSuccessAlert = JSON["msg"]as Any as? String
                                
-                               if strSuccess == "success" //true
-                               {
+                               if strSuccess == "success" {
+                                   
                                 /*
                                  data =     {
                                      
@@ -359,6 +366,7 @@ class GetStartedNowNew: UIViewController,UITextFieldDelegate {
                                      status = success;
                                  }
                                  */
+                                   
                                    var dict: Dictionary<AnyHashable, Any>
                                    dict = JSON["data"] as! Dictionary<AnyHashable, Any>
                                    

@@ -20,6 +20,7 @@ class ProcessCardPageTwo: UIViewController , UITextFieldDelegate {
     
     var str_get_only_processing_fee:String! = "0"
     var str_get_only_total_price:String! = "0"
+    var str_get_only_total_price_with_processing_fee:String! = "0"
     
     var arrListOfProcessingFee:NSMutableArray! = []
     
@@ -443,44 +444,51 @@ class ProcessCardPageTwo: UIViewController , UITextFieldDelegate {
                 // TODO: Your implementation for selection
                 // self!.lblProcessingFees.text = selctedText + " selcted at \(atIndex)"
                 
-                // self!.lblProcessingFees.text = selctedText
-                
-                // self!.lblCARDPROCESSGINFEES.text = selctedText+" %"
-                
-                // self!.saveCardProcessingFees = selctedText
-                
-                /*self!.lblProcessingFees.text = "Processing Fees ("+selctedText+"%):"
-                self!.lblCARDPROCESSGINFEES.text = selctedText+" %"
-                
-                self!.saveCardProcessingFees = selctedText*/
-                
+                // processing fee
                 self.str_get_only_processing_fee = selctedText
-                self.lblCARDPROCESSGINFEES.text = selctedText+" %"
                 
+                // show processing fee add with %
+                self.lblCARDPROCESSGINFEES.text = selctedText+" %"
                 
                 
                 // calculate percentage
                 let doubleProcessingfee = Double(selctedText)!/100
-                print(doubleProcessingfee as Any)
+                // print(doubleProcessingfee as Any)
                 
                 
+                // calculate percentage with total amount
+                let value = calculatePercentage(value: Double(self.txtEnterAmount.text!)!,percentageVal: Double(self.str_get_only_processing_fee)!)
+                // print(value)
                 
                 
-                
+                // set invoice amount
                 self.lblInvoiceAmount.text = "$"+String(self.txtEnterAmount.text!)
                 
+                
+                // add total amount with percentage amount
+                let str_add_precentage_with_toal_amount = Double(value)+Double(self.txtEnterAmount.text!)!
+                // print(str_add_precentage_with_toal_amount)
+                
+                
+                // show total amount after add fee
+                self.lblTotalAmountUs.text = "$"+String(str_add_precentage_with_toal_amount)
+                
+                
+                // show calculated processing fee with total amount
                 self.lblProcessingFees.text = "Processing Fees ("+String(doubleProcessingfee)+"%):"
-                self.lblChangeProcessingFee.text = "$"+String(doubleProcessingfee)
+                self.lblChangeProcessingFee.text = "$"+String(value)
                 
-                let calculateTotalAmount = doubleProcessingfee+Double(self.txtEnterAmount.text!)!
-                self.lblTotalAmountUs.text = "$"+String(calculateTotalAmount)
                 
-                self.str_get_only_total_price = String(calculateTotalAmount)
+                // total amount entered
+                self.str_get_only_total_price = String(self.txtEnterAmount.text!)
+                
+                
+                // total amount after add all values
+                self.str_get_only_total_price_with_processing_fee = String(str_add_precentage_with_toal_amount)
+                
             }
             
         }
-        
-       
         
     }
     
@@ -520,9 +528,20 @@ class ProcessCardPageTwo: UIViewController , UITextFieldDelegate {
                 
             } else {
                 
+                /*
+                 self.str_get_only_total_price = String(self.txtEnterAmount.text!)
+                 
+                 
+                 // total amount after add all values
+                 self.str_get_only_total_price_with_processing_fee = String(str_add_precentage_with_toal_amount)
+                 */
+                
                 let settingsVCId = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "AddProcessCardTwoId") as? AddProcessCardTwo
-                settingsVCId!.amountIs = self.str_get_only_total_price // self.lblTotalAmountUs.text
-                settingsVCId!.percentageIs = self.str_get_only_processing_fee
+                
+                settingsVCId!.amountIs      = self.str_get_only_total_price
+                settingsVCId!.percentageIs  = self.str_get_only_processing_fee
+                settingsVCId!.total_price   = self.str_get_only_total_price_with_processing_fee
+                
                 self.navigationController?.pushViewController(settingsVCId!, animated: true)
                 
             }
@@ -670,3 +689,9 @@ class ProcessCardPageTwo: UIViewController , UITextFieldDelegate {
     
        }
 }
+
+public func calculatePercentage(value:Double,percentageVal:Double)->Double{
+    let val = value * percentageVal
+    return val / 100.0
+}
+

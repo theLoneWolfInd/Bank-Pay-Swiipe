@@ -175,8 +175,9 @@ class PersonalDashbaord: UIViewController,MFMailComposeViewControllerDelegate, U
             imgBusinessUserProfileImage.isUserInteractionEnabled = true
             imgBusinessUserProfileImage.addGestureRecognizer(tapGestureRecognizer)
             
-            let x : NSNumber = person["wallet"] as! NSNumber
-            self.lblTotalAmountInWallet.text = "$ "+"\(x)"
+            let x : Double = person["wallet"] as! Double
+            let foo = x.rounded(digits: 2)
+            self.lblTotalAmountInWallet.text = "$ "+"\(foo)"
             
             /*
              let livingArea = person["wallet"] as? Int ?? 0
@@ -245,14 +246,8 @@ class PersonalDashbaord: UIViewController,MFMailComposeViewControllerDelegate, U
         
         self.present(alertController, animated: true, completion: nil)
         
-        
-        
-        
-        
-        
-        
-        
     }
+    
     @objc func openCamera() {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
@@ -271,26 +266,27 @@ class PersonalDashbaord: UIViewController,MFMailComposeViewControllerDelegate, U
     
     internal func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
-            imgUploadYesOrNo = "1"
-            
-            // let indexPath = IndexPath.init(row: 0, section: 0)
-            // let cell = tbleView.cellForRow(at: indexPath) as! EditProfileTableCell
-            
-            let image_data = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
-            imgBusinessUserProfileImage.image = image_data // show image on image view
-            let imageData:Data = image_data!.pngData()!
-            imageStr = imageData.base64EncodedString()
-            self.dismiss(animated: true, completion: nil)
-            
-            imgData = image_data!.jpegData(compressionQuality: 0.2)!
+        imgUploadYesOrNo = "1"
+        
+        // let indexPath = IndexPath.init(row: 0, section: 0)
+        // let cell = tbleView.cellForRow(at: indexPath) as! EditProfileTableCell
+        
+        let image_data = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
+        imgBusinessUserProfileImage.image = image_data // show image on image view
+        let imageData:Data = image_data!.pngData()!
+        imageStr = imageData.base64EncodedString()
+        self.dismiss(animated: true, completion: nil)
+        
+        imgData = image_data!.jpegData(compressionQuality: 0.2)!
         
         editWithImage()
-
+        
     }
+    
     @objc func editWithImage() {
 
-        if let person = UserDefaults.standard.value(forKey: "keyLoginFullData") as? [String:Any]
-        {
+        if let person = UserDefaults.standard.value(forKey: "keyLoginFullData") as? [String:Any] {
+            
          let x : Int = (person["userId"] as! Int)
          let myString = String(x)
           
@@ -678,5 +674,13 @@ extension String {
 
     mutating func capitalizeFirstLetter() {
         self = self.capitalizingFirstLetter()
+    }
+}
+
+
+extension Double {
+    func rounded(digits: Int) -> Double {
+        let multiplier = pow(10.0, Double(digits))
+        return (self * multiplier).rounded() / multiplier
     }
 }

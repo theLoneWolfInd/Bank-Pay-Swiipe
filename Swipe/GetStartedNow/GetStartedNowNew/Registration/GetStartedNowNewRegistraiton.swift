@@ -18,6 +18,8 @@ class GetStartedNowNewRegistraiton: UIViewController,UITextFieldDelegate {
     
     var myDeviceTokenIs:String!
     
+    @IBOutlet weak var img_registration_screen:UIImageView!
+    
     @IBOutlet weak var navigationBar:UIView! {
         didSet {
             // navigationBar.backgroundColor = NAVIGATION_BUSINESS_BACKGROUND_COLOR
@@ -72,17 +74,23 @@ class GetStartedNowNewRegistraiton: UIViewController,UITextFieldDelegate {
         
         let defaults = UserDefaults.standard
         let userName = defaults.string(forKey: "KeyLoginPersonal")
+        
         if userName == "loginViaPersonal" {
+            
             // navigationBar.backgroundColor = NAVIGATION_PERSONAL_BACKGROUND_COLOR
             lblBusinessOrpersonal.text = "PERSONAL"
             imgBGColor.image = UIImage(named:"PloginBG")
             // self.signInPersonalSubmitGradientColor()
-        }
-        else {
+            
+            self.img_registration_screen.image = UIImage(named:"new_personal_logo")
+            
+        } else {
+            
             // navigationBar.backgroundColor = NAVIGATION_BUSINESS_BACKGROUND_COLOR
             lblBusinessOrpersonal.text = "BUSINESS"
             imgBGColor.image = UIImage(named:"bLoginBG")
             // self.signInBusinessSubmitGradientColor()
+            
         }
         
         

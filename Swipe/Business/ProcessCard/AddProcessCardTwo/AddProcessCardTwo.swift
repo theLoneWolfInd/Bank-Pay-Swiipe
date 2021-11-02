@@ -37,6 +37,7 @@ class AddProcessCardTwo: UIViewController,UITextFieldDelegate,ScanEvents, ScanDe
     func denyPermissionButton() -> String { return "GO" }
     
     var amountIs:String!
+    var total_price:String!
     
     var percentageIs:String!
     
@@ -125,7 +126,7 @@ class AddProcessCardTwo: UIViewController,UITextFieldDelegate,ScanEvents, ScanDe
         let indexPath = IndexPath(row: 0, section: 0)
         let cell = self.tbleView.cellForRow(at: indexPath) as! AddProcessCardTwoTableCell
         
-        cell.txtEnterEmount.text = amountIs
+        cell.txtEnterEmount.text = String(self.total_price)
         cell.txtEnterEmount.isUserInteractionEnabled = false
         
         cell.txtCreditCardNumber.addTarget(self, action: #selector(didChangeText(textField:)), for: .editingChanged)
@@ -577,47 +578,6 @@ class AddProcessCardTwo: UIViewController,UITextFieldDelegate,ScanEvents, ScanDe
     }
     
     
-    
-  /*
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        
-        let indexPath = IndexPath(row: 0, section: 0)
-        let cell = self.tbleView.cellForRow(at: indexPath) as! AddProcessCardTwoTableCell
-        
-        if textField == cell.txtExpDate {
-      if range.length > 0 {
-        return true
-      }
-      if string == "" {
-        return false
-      }
-      if range.location > 4 {
-        return false
-      }
-      var originalText = textField.text
-      let replacementText = string.replacingOccurrences(of: " ", with: "")
-
-      //Verify entered text is a numeric value
-      if !CharacterSet.decimalDigits.isSuperset(of: CharacterSet(charactersIn: replacementText)) {
-        return false
-      }
-
-      //Put / after 2 digit
-      if range.location == 2 {
-        originalText?.append("/")
-        textField.text = originalText
-      }
-        }
-      return true
-    }
-}
-*/
-
-    
-    /*
-     
-     */
-    
     @objc func charge_amount_before_submit_to_Server(str_stripe_token:String) {
         // ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
         
@@ -625,11 +585,11 @@ class AddProcessCardTwo: UIViewController,UITextFieldDelegate,ScanEvents, ScanDe
         let userName = defaults.string(forKey: "KeyLoginPersonal")
         if userName == "loginViaPersonal" {
             // personal user
-            ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
+            // ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
             
         }
         else {
-            ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
+            // ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
         }
         
         
@@ -642,12 +602,13 @@ class AddProcessCardTwo: UIViewController,UITextFieldDelegate,ScanEvents, ScanDe
             let x : Int = (person["userId"] as! Int)
             let myString = String(x)
             
-            let myString23 = String(amountIs)
+            // let myString23 = String(amountIs)
             // let myDouble = Double(myString23)
             
-            let fullNameArr = String(amountIs).components(separatedBy: ".")
+            let fullNameArr = String(self.total_price).components(separatedBy: ".")
 
-            // print(fullNameArr as Any)
+            print(fullNameArr as Any)
+            
             let name    = fullNameArr[0]
             let surname = fullNameArr[1]
             
@@ -771,12 +732,11 @@ class AddProcessCardTwo: UIViewController,UITextFieldDelegate,ScanEvents, ScanDe
         let userName = defaults.string(forKey: "KeyLoginPersonal")
         if userName == "loginViaPersonal" {
             // personal user
-            ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
+            // ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
             
-        }
-        else {
+        } else {
             
-            ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
+            // ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
             
         }
         
@@ -787,10 +747,12 @@ class AddProcessCardTwo: UIViewController,UITextFieldDelegate,ScanEvents, ScanDe
         let indexPath = IndexPath(row: 0, section: 0)
         let cell = self.tbleView.cellForRow(at: indexPath) as! AddProcessCardTwoTableCell
         
-        if let person = UserDefaults.standard.value(forKey: "keyLoginFullData") as? [String:Any]
-        {
+        if let person = UserDefaults.standard.value(forKey: "keyLoginFullData") as? [String:Any] {
+            
             let x : Int = (person["userId"] as! Int)
             let myString = String(x)
+            
+            let get_last_digits_number = String(cell.txtCreditCardNumber.text!).suffix(4)
             
             parameters = [
                 "action"             : "addcardprocessing",
@@ -798,12 +760,12 @@ class AddProcessCardTwo: UIViewController,UITextFieldDelegate,ScanEvents, ScanDe
                 "TransactionID"      : String(str_tansaction_fee),
                 "Phone"              : String(cell.txtPhoneNumber.text!),
                 "email"              : String(cell.txtEmailAddress.text!),
-                "cardNo"             : String(cell.txtCreditCardNumber.text!),
+                "cardNo"             : String(get_last_digits_number),
                 "nameOnCard"         : String(cell.txtNameOnCard.text!),
                 "percentage"         : String(percentageIs),
                 "processingCharge"   : String(percentageIs),
                 "Amount"             : String(cell.txtEnterEmount.text!),
-                "Total"              : String(amountIs),
+                "Total"              : String(self.total_price),
             ]
         }
         
@@ -818,7 +780,7 @@ class AddProcessCardTwo: UIViewController,UITextFieldDelegate,ScanEvents, ScanDe
                     
                     
                     let JSON = data as! NSDictionary
-                    print(JSON)
+                    // print(JSON)
                     
                     var strSuccess : String!
                     strSuccess = JSON["status"]as Any as? String
@@ -828,27 +790,24 @@ class AddProcessCardTwo: UIViewController,UITextFieldDelegate,ScanEvents, ScanDe
                     
                     if strSuccess == "success" {
                         
-                        // var strPercentage : String!
-                        // strPercentage = JSON["percentage"]as Any as? String
-                        // print(strPercentage as Any)
-                        // self.strSavePercentage = strPercentage
-                        
-                        // let indexPath = IndexPath(row: 0, section: 0)
-                        // let cell = self.tbleView.cellForRow(at: indexPath) as! AddProcessCardTableCell
-                        
-                        // cell.lblInvoiceAmount.text = "INVOICE AMOUNT : $0"
-                        // cell.lblProcessingFee.text = "PROCESSING FEE( 0% ): $0"
-                        // cell.lblTotalAmount.text = "TOTAL AMOUNT : $0"
-                        
-                        // self.navigationController?.popViewController(animated: true)
-                        
-                        let settingsVCId = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "ProcessingCardListId") as? ProcessingCardList
-                        self.navigationController?.pushViewController(settingsVCId!, animated: true)
-                        
                         ERProgressHud.sharedInstance.hide()
+                        
+                        let alert = UIAlertController(title: "Success", message: String(strSuccessAlert),preferredStyle: UIAlertController.Style.alert)
+
+                        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.default, handler: { _ in
+                            //Cancel Action
+                        }))
+                        alert.addAction(UIAlertAction(title: "OK",
+                                                      style: UIAlertAction.Style.default,
+                                                      handler: {(_: UIAlertAction!) in
+                                                        //Sign out action
+                            let settingsVCId = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "ProcessingCardListId") as? ProcessingCardList
+                            self.navigationController?.pushViewController(settingsVCId!, animated: true)
+                        }))
+                        self.present(alert, animated: true, completion: nil)
+                        
                     }
-                    else
-                    {
+                    else {
                         // self.indicator.stopAnimating()
                         // self.enableService()
                         CRNotifications.showNotification(type: CRNotifications.error, title: "Error!", message:strSuccessAlert, dismissDelay: 1.5, completion:{})

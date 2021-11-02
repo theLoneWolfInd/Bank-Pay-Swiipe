@@ -127,10 +127,15 @@ class AddMoney: UIViewController,UITextFieldDelegate,UIPickerViewDelegate,UIPick
         txtAmount.delegate = self
         setPaddingWithImage(image: UIImage(named:"dollarCashout")!, textField: txtAmount)
         
-        if let person = UserDefaults.standard.value(forKey: "keyLoginFullData") as? [String:Any]
-        {
-            let x : NSNumber = person["wallet"] as! NSNumber
-            self.lblTotalAmountInWallet.text = "$ "+"\(x)"
+        if let person = UserDefaults.standard.value(forKey: "keyLoginFullData") as? [String:Any] {
+            // let x : NSNumber = person["wallet"] as! NSNumber
+            // self.lblTotalAmountInWallet.text = "$ "+"\(x)"
+            
+            let x : Double = person["wallet"] as! Double
+            let foo = x.rounded(digits: 2)
+            self.lblTotalAmountInWallet.text = "$ "+"\(foo)"
+            
+            
             /*
             let livingArea = person["wallet"] as? Int ?? 0
             if livingArea == 0 {

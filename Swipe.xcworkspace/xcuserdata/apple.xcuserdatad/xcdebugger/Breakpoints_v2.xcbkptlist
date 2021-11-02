@@ -14,8 +14,8 @@
             filePath = "Swipe/Personal/PersonalDashboard/SendMoney/SendMoneyPersonal.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "603"
-            endingLineNumber = "603"
+            startingLineNumber = "604"
+            endingLineNumber = "604"
             landmarkName = "payOrDeclineWB(strRequestId:strStatus:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -30,8 +30,8 @@
             filePath = "Swipe/Personal/PersonalDashboard/SendMoney/SendMoneyPersonal.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "615"
-            endingLineNumber = "615"
+            startingLineNumber = "616"
+            endingLineNumber = "616"
             landmarkName = "payOrDeclineWB(strRequestId:strStatus:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -46,8 +46,8 @@
             filePath = "Swipe/Personal/PersonalDashboard/SendMoney/SendMoneyPersonal.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "485"
-            endingLineNumber = "485"
+            startingLineNumber = "486"
+            endingLineNumber = "486"
             landmarkName = "searchUsersListWB(strSearchKeyWord:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -62,8 +62,8 @@
             filePath = "Swipe/Business/RequestMoneyUser/RequestMoneyUser.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "285"
-            endingLineNumber = "285"
+            startingLineNumber = "291"
+            endingLineNumber = "291"
             landmarkName = "tableView(_:cellForRowAt:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -78,8 +78,8 @@
             filePath = "Swipe/Business/AddBankAccount/AddBankAccount.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "493"
-            endingLineNumber = "493"
+            startingLineNumber = "497"
+            endingLineNumber = "497"
             landmarkName = "save_bank_Stripe_Details_to_our_server_wb(strStripeBankAccountNumber:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -97,38 +97,6 @@
             startingLineNumber = "87"
             endingLineNumber = "87"
             landmarkName = "viewDidLoad()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "7FAC6BD8-4527-47C7-8BC8-DE75E6A7C65E"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Swipe/Business/ProcessCard/AddProcessCardTwo/AddProcessCardTwo.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "810"
-            endingLineNumber = "810"
-            landmarkName = "addWB(str_tansaction_fee:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "ECAA55CA-C230-4903-A893-5FAEF1921FD8"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Swipe/Business/ProcessCard/AddProcessCardTwo/AddProcessCardTwo.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "821"
-            endingLineNumber = "821"
-            landmarkName = "addWB(str_tansaction_fee:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -161,6 +129,22 @@
             startingLineNumber = "207"
             endingLineNumber = "207"
             landmarkName = "tableView(_:didSelectRowAt:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "560E134B-1543-4047-A916-6BF169DCFC0B"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Swipe/Business/AddBankAccount/AddBankAccount.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "334"
+            endingLineNumber = "334"
+            landmarkName = "addBankAccountWB()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
