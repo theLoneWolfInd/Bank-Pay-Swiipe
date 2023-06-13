@@ -16,7 +16,12 @@ class Invoice: UIViewController {
     let cellReuseIdentifier = "invoicesTableCell"
     
     // array list
-    var arrListOfAllTransaction:Array<Any>!
+    // var arrListOfAllTransaction:Array<Any>!
+    
+    var arr_list_of_all_invoices:NSMutableArray! = []
+    
+    var page : Int! = 1
+    var loadMore : Int! = 1;
     
     @IBOutlet weak var navigationBar:UIView! {
         didSet {
@@ -106,7 +111,10 @@ class Invoice: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         self.navigationController?.setNavigationBarHidden(true, animated: true)
-        allTransactionWB()
+        
+        self.page = 1
+        self.arr_list_of_all_invoices.removeAllObjects()
+        self.allTransactionWB(pageNumber: 1)
     }
 
     @objc func addInvoiceClickMethod() {
@@ -114,8 +122,28 @@ class Invoice: UIViewController {
          self.navigationController?.pushViewController(settingsVCId!, animated: true)
     }
     
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+                
+        if scrollView == self.tbleView {
+            let isReachingEnd = scrollView.contentOffset.y >= 0
+                && scrollView.contentOffset.y >= (scrollView.contentSize.height - scrollView.frame.size.height)
+            if(isReachingEnd) {
+                if(loadMore == 1) {
+                    loadMore = 0
+                    page += 1
+                    print(page as Any)
+                    
+                    
+                        self.allTransactionWB(pageNumber: page)
+                    
+                    
+                }
+            }
+        }
+    }
+    
     //MARK:- ALL TRANSACTION
-    @objc func allTransactionWB() {
+    @objc func allTransactionWB(pageNumber:Int) {
            // ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
            
         
@@ -143,7 +171,7 @@ class Invoice: UIViewController {
                        "action"        : "invoicelist",
                        "userId"        : String(myString),
                        "type"        : "Vendor",
-                       "pageNo"        : "0",
+                       "pageNo"        : pageNumber
                        
                    ]
         }
@@ -177,12 +205,14 @@ class Invoice: UIViewController {
                                 
                                 var ar : NSArray!
                                 ar = (JSON["data"] as! Array<Any>) as NSArray
-                                self.arrListOfAllTransaction = (ar as! Array<Any>)
-                                                             
+                                // self.arrListOfAllTransaction = (ar as! Array<Any>)
+                                   self.arr_list_of_all_invoices.addObjects(from: ar as! [Any])
+                                   
                                 self.tbleView.delegate = self
                                 self.tbleView.dataSource = self
                                 self.tbleView.reloadData()
-                                
+                                   self.loadMore = 1
+                                   
                                 ERProgressHud.sharedInstance.hide()
                                }
                                else
@@ -231,7 +261,7 @@ extension Invoice: UITableViewDataSource
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        return arrListOfAllTransaction.count
+        return self.arr_list_of_all_invoices.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
@@ -240,7 +270,7 @@ extension Invoice: UITableViewDataSource
         
         cell.backgroundColor = .white
         
-        let item = arrListOfAllTransaction[indexPath.row] as? [String:Any]
+        let item = self.arr_list_of_all_invoices[indexPath.row] as? [String:Any]
         // print(item as Any)
         /*
          TotalAmount = "2.86";
@@ -283,7 +313,7 @@ extension Invoice: UITableViewDataSource
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView .deselectRow(at: indexPath, animated: true)
         
-        let item = arrListOfAllTransaction[indexPath.row] as? [String:Any]
+        let item = self.arr_list_of_all_invoices[indexPath.row] as? [String:Any]
         let settingsVCId = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "InvoiceDetailsId") as? InvoiceDetails
         settingsVCId!.getDictInvoice = (item! as NSDictionary)
         self.navigationController?.pushViewController(settingsVCId!, animated: true)

@@ -18,23 +18,25 @@ class TransactionDetails: UIViewController {
     var dictGetClickedTransaction:NSDictionary!
     
     let cellReuseIdentifier = "transactionTableCell"
-
+    
     var dictServerValue:NSDictionary!
     
+    var str_select_profile:String!
+    
     @IBOutlet weak var navigationBar:UIView! {
-           didSet {
-               navigationBar.backgroundColor = NAVIGATION_BUSINESS_BACKGROUND_COLOR
-           }
-       }
-       
-       @IBOutlet weak var lblNavigationTitle:UILabel! {
-           didSet {
-               // lblNavigationTitle.text = "TRANSACTION DETAILS"
-               lblNavigationTitle.textColor = .white
-           }
-       }
-       
-       @IBOutlet weak var btnBack:UIButton!
+        didSet {
+            navigationBar.backgroundColor = NAVIGATION_BUSINESS_BACKGROUND_COLOR
+        }
+    }
+    
+    @IBOutlet weak var lblNavigationTitle:UILabel! {
+        didSet {
+            // lblNavigationTitle.text = "TRANSACTION DETAILS"
+            lblNavigationTitle.textColor = .white
+        }
+    }
+    
+    @IBOutlet weak var btnBack:UIButton!
     
     @IBOutlet weak var lblAmountLeftInAccoun:UILabel! {
         didSet {
@@ -42,7 +44,7 @@ class TransactionDetails: UIViewController {
             lblAmountLeftInAccoun.textColor = .white
         }
     }
-
+    
     @IBOutlet weak var imgBusinessUserProfileImage:UIImageView! {
         didSet {
             imgBusinessUserProfileImage.layer.cornerRadius = 70
@@ -56,6 +58,12 @@ class TransactionDetails: UIViewController {
         didSet {
             // lblBusinessUserName.text = "Allen Chandler"
             lblBusinessUserName.textColor = .white
+        }
+    }
+    
+    @IBOutlet weak var view_bottom:UIView! {
+        didSet {
+            view_bottom.isHidden = true
         }
     }
     
@@ -82,13 +90,13 @@ class TransactionDetails: UIViewController {
     }
     
     @IBOutlet weak var tbleView: UITableView! {
-            didSet {
-                // tbleView.delegate = self
-                // tbleView.dataSource = self
-                self.tbleView.backgroundColor = .white
-                self.tbleView.tableFooterView = UIView.init(frame: CGRect(origin: .zero, size: .zero))
-
-            }
+        didSet {
+            // tbleView.delegate = self
+            // tbleView.dataSource = self
+            self.tbleView.backgroundColor = .white
+            self.tbleView.tableFooterView = UIView.init(frame: CGRect(origin: .zero, size: .zero))
+            
+        }
     }
     
     override func viewDidLoad() {
@@ -96,7 +104,7 @@ class TransactionDetails: UIViewController {
         // self.view.backgroundColor = BUTTON_BACKGROUND_COLOR_BLUE
         
         btnBack.addTarget(self, action: #selector(backClickMethod), for: .touchUpInside)
-         // print(dictGetClickedTransaction as Any)
+        // print(dictGetClickedTransaction as Any)
         
         /*
          amount = 5;
@@ -121,273 +129,263 @@ class TransactionDetails: UIViewController {
         if userName == "loginViaPersonal" {
             // personal user
             navigationBar.backgroundColor = NAVIGATION_PERSONAL_BACKGROUND_COLOR
-              self.view.backgroundColor = NAVIGATION_PERSONAL_BACKGROUND_COLOR
+            self.view.backgroundColor = NAVIGATION_PERSONAL_BACKGROUND_COLOR
         }
         else {
             navigationBar.backgroundColor = NAVIGATION_BUSINESS_BACKGROUND_COLOR
-             self.view.backgroundColor = BUTTON_BACKGROUND_COLOR_BLUE
+            self.view.backgroundColor = BUTTON_BACKGROUND_COLOR_BLUE
         }
         
-    }   
-
+        
+        
+        if self.str_select_profile == "yes" {
+            self.btnBack.setImage(UIImage(systemName: "arrow.left"), for: .normal)
+            self.btnBack.tintColor = .white
+        }
+        
+    }
+    
     @objc func backClickMethod() {
         self.navigationController?.popViewController(animated: true)
     }
     override var preferredStatusBarStyle: UIStatusBarStyle {
-          return .lightContent
+        return .lightContent
     }
     
     /*
      [action] => sendmoney
-        [userId] => 39
-        [receiverId] => 51
-        [amount] => 1
+     [userId] => 39
+     [receiverId] => 51
+     [amount] => 1
      */
     
     //MARK:- ALL TRANSACTION DETAILS
     @objc func allTransactionsDetailsWB() {
-           // ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
-           
+        // ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
+        
         
         let defaults = UserDefaults.standard
         let userName = defaults.string(forKey: "KeyLoginPersonal")
         if userName == "loginViaPersonal" {
             // personal user
-             ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
+            ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
             
         }
         else {
-             ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
+            ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
         }
         
-               let urlString = BASE_URL_SWIIPE
-               
-               var parameters:Dictionary<AnyHashable, Any>!
-           
+        let urlString = BASE_URL_SWIIPE
+        
+        var parameters:Dictionary<AnyHashable, Any>!
+        
         // if let person = UserDefaults.standard.value(forKey: "keyLoginFullData") as? [String:Any]
         // {
-            // let x : Int = (person["userId"] as! Int)
-            // let myString = String(x)
-            
-                   parameters = [
-                       "action"        : "transactiondetails",
-                       "transactionsId" : (dictGetClickedTransaction!["transactionsId"] as! Int)
-                   ]
+        // let x : Int = (person["userId"] as! Int)
+        // let myString = String(x)
+        
+        parameters = [
+            "action"        : "transactiondetails",
+            "transactionsId" : (dictGetClickedTransaction!["transactionsId"] as! Int)
+        ]
         // }
-                
-                   print("parameters-------\(String(describing: parameters))")
-                   
-                   Alamofire.request(urlString, method: .post, parameters: parameters as? Parameters).responseJSON
-                       {
-                           response in
-               
-                           switch(response.result) {
-                           case .success(_):
-                              if let data = response.result.value {
-
-                               
-                               let JSON = data as! NSDictionary
-                                // print(JSON)
-                               
-                               var strSuccess : String!
-                               strSuccess = JSON["status"]as Any as? String
-                               
-                               var strSuccessAlert : String!
-                               strSuccessAlert = JSON["msg"]as Any as? String
-                               
-                               if strSuccess == "success" //true
-                               {
-                                self.dictServerValue = (JSON["data"] as! NSDictionary)
-                                
-                                
-                                
-                                /*
-                                 /*
-                                 amount = 1;
-                                 bankName = "";
-                                 cardNumber = 4242424242424242;
-                                 created = "Jan 2nd, 2020, 10:48 am";
-                                 receiverContactNumber = 9638521230;
-                                 receiverEmail = "purnimaevs@gmail.com";
-                                 receiverId = 74;
-                                 receiverImage = "http://demo2.evirtualservices.com/swiipe/site/img/uploads/users/1576134757images(8).jpeg";
-                                 receiverName = purnima;
-                                 senderContactNumber = 9638521230;
-                                 senderEmail = "purnimaevs@gmail.com";
-                                 senderId = 74;
-                                 senderImage = "http://demo2.evirtualservices.com/swiipe/site/img/uploads/users/1576134757images(8).jpeg";
-                                 senderName = purnima;
-                                 transactionID = "tok_1FwM4SBnk7ygV50qJnDcfREo";
-                                 transactionsId = 00226;
-                                 type = ADD;
-                                 */
-                                 */
-                                
-        if (self.dictServerValue!["type"] as! String) == "ADD" {
+        
+        print("parameters-------\(String(describing: parameters))")
+        
+        Alamofire.request(urlString, method: .post, parameters: parameters as? Parameters).responseJSON
+        {
+            response in
             
-            self.imgBusinessUserProfileImage.sd_setImage(with: URL(string: (self.dictServerValue["senderImage"] as! String)), placeholderImage: UIImage(named: "plainBack")) // my profile image
-            
-            
-            // let amountIs:String = (self.dictServerValue?["amount"] as? String)!
-            
-            let strAmou:String = (self.dictServerValue?["amount"] as? String)!
-            self.lblBusinessUserName.text = "$ "+strAmou
-            
-            /*
-            let livingArea = self.dictServerValue?["amount"] as? Int ?? 0
-            if livingArea == 0 {
-                let stringValue = String(livingArea)
-                self.lblBusinessUserName.text = "$ "+stringValue
-            }
-            else {
- 
-                 let stringValue = String(livingArea)
-                self.lblBusinessUserName.text = "$ "+stringValue
-             }
-            */
-            // business user name
-            // self.lblBusinessUserName.text = (self.dictServerValue["senderName"] as! String)
-            
-            // business phone
-            // self.btnCall.setTitle((self.dictServerValue["senderContactNumber"] as! String), for: .normal)
-            
-            self.btnCall.setTitle("Paid to", for: .normal)
-            
-            // business email
-            self.btnMail.setTitle((self.dictServerValue["receiverName"] as! String), for: .normal)
-                             
-            self.lblNavigationTitle.text = "Transaction Details"
-        }
-        else if (self.dictServerValue!["type"] as! String) == "SEND" {
-            self.imgBusinessUserProfileImage.sd_setImage(with: URL(string: (self.dictServerValue["receiverImage"] as! String)), placeholderImage: UIImage(named: "plainBack")) // my profile image
-            
-            let strAmou:String = (self.dictServerValue?["amount"] as? String)!
-            
-              if let person = UserDefaults.standard.value(forKey: "keyLoginFullData") as? [String:Any] {
-                
-                        let x : Int = (person["userId"] as! Int)
-                        let myString = String(x)
-                
-                let y : Int = (self.dictServerValue["receiverId"] as! Int)
-                let myString2 = String(y)
+            switch(response.result) {
+            case .success(_):
+                if let data = response.result.value {
+                    
+                    
+                    let JSON = data as! NSDictionary
+                    // print(JSON)
+                    
+                    var strSuccess : String!
+                    strSuccess = JSON["status"]as Any as? String
+                    
+                    var strSuccessAlert : String!
+                    strSuccessAlert = JSON["msg"]as Any as? String
+                    
+                    if strSuccess == "success" //true
+                    {
+                        self.dictServerValue = (JSON["data"] as! NSDictionary)
                         
-                        if (myString2 == myString) {
-                            // +
+                        
+                        
+                        /*
+                         /*
+                          amount = 1;
+                          bankName = "";
+                          cardNumber = 4242424242424242;
+                          created = "Jan 2nd, 2020, 10:48 am";
+                          receiverContactNumber = 9638521230;
+                          receiverEmail = "purnimaevs@gmail.com";
+                          receiverId = 74;
+                          receiverImage = "http://demo2.evirtualservices.com/swiipe/site/img/uploads/users/1576134757images(8).jpeg";
+                          receiverName = purnima;
+                          senderContactNumber = 9638521230;
+                          senderEmail = "purnimaevs@gmail.com";
+                          senderId = 74;
+                          senderImage = "http://demo2.evirtualservices.com/swiipe/site/img/uploads/users/1576134757images(8).jpeg";
+                          senderName = purnima;
+                          transactionID = "tok_1FwM4SBnk7ygV50qJnDcfREo";
+                          transactionsId = 00226;
+                          type = ADD;
+                          */
+                         */
+                        
+                        if (self.dictServerValue!["type"] as! String) == "ADD" {
+                            
+                            self.imgBusinessUserProfileImage.sd_setImage(with: URL(string: (self.dictServerValue["senderImage"] as! String)), placeholderImage: UIImage(named: "plainBack")) // my profile image
+                            
+                            
+                            // let amountIs:String = (self.dictServerValue?["amount"] as? String)!
+                            
+                            let strAmou:String = (self.dictServerValue?["amount"] as? String)!
                             self.lblBusinessUserName.text = "$ "+strAmou
+                            
+                            /*
+                             let livingArea = self.dictServerValue?["amount"] as? Int ?? 0
+                             if livingArea == 0 {
+                             let stringValue = String(livingArea)
+                             self.lblBusinessUserName.text = "$ "+stringValue
+                             }
+                             else {
+                             
+                             let stringValue = String(livingArea)
+                             self.lblBusinessUserName.text = "$ "+stringValue
+                             }
+                             */
+                            // business user name
+                            // self.lblBusinessUserName.text = (self.dictServerValue["senderName"] as! String)
+                            
+                            // business phone
+                            // self.btnCall.setTitle((self.dictServerValue["senderContactNumber"] as! String), for: .normal)
+                            
+                            self.btnCall.setTitle("Paid to", for: .normal)
+                            
+                            // business email
+                            self.btnMail.setTitle((self.dictServerValue["receiverName"] as! String), for: .normal)
+                            
+                            self.lblNavigationTitle.text = "Transaction Details"
                         }
-                        else {
-                            // -
-                            self.lblBusinessUserName.text = "- $ "+strAmou
+                        else if (self.dictServerValue!["type"] as! String) == "SEND" {
+                            self.imgBusinessUserProfileImage.sd_setImage(with: URL(string: (self.dictServerValue["receiverImage"] as! String)), placeholderImage: UIImage(named: "plainBack")) // my profile image
+                            
+                            let strAmou:String = (self.dictServerValue?["amount"] as? String)!
+                            
+                            if let person = UserDefaults.standard.value(forKey: "keyLoginFullData") as? [String:Any] {
+                                
+                                let x : Int = (person["userId"] as! Int)
+                                let myString = String(x)
+                                
+                                let y : Int = (self.dictServerValue["receiverId"] as! Int)
+                                let myString2 = String(y)
+                                
+                                if (myString2 == myString) {
+                                    // +
+                                    self.lblBusinessUserName.text = "$ "+strAmou
+                                }
+                                else {
+                                    // -
+                                    self.lblBusinessUserName.text = "- $ "+strAmou
+                                }
+                                
+                            }
+                            
+                            
+                            
+                            /*
+                             let livingArea = self.dictServerValue?["amount"] as? Int ?? 0
+                             if livingArea == 0 {
+                             let stringValue = String(livingArea)
+                             self.lblBusinessUserName.text = "$ "+stringValue
+                             }
+                             else
+                             {
+                             let stringValue = String(livingArea)
+                             self.lblBusinessUserName.text = "$ "+stringValue
+                             }
+                             */
+                            // business user name
+                            // self.lblBusinessUserName.text = (self.dictServerValue["receiverName"] as! String)
+                            
+                            // business phone
+                            // self.btnCall.setTitle((self.dictServerValue["receiverContactNumber"] as! String), for: .normal)
+                            
+                            self.btnCall.setTitle("Paid to", for: .normal)
+                            
+                            // business email
+                            self.btnMail.setTitle((self.dictServerValue["receiverName"] as! String), for: .normal)
+                            
+                            self.lblNavigationTitle.text = "Transaction Details"
+                        }
+                        else if (self.dictServerValue!["type"] as! String) == "CardProcess" {
+                            
+                            self.btnCall.setTitle((self.dictServerValue["type"] as! String), for: .normal)
+                            
+                            self.imgBusinessUserProfileImage.sd_setImage(with: URL(string: (self.dictServerValue["receiverImage"] as! String)), placeholderImage: UIImage(named: "plainBack")) // my profile image
+                            
+                            let strAmou:String = (self.dictServerValue?["amount"] as? String)!
+                            self.lblBusinessUserName.text = "+ $ "+strAmou
+                            
+                            // business email
+                            self.btnMail.setTitle((self.dictServerValue["receiverName"] as! String), for: .normal)
+                            
+                            self.lblNavigationTitle.text = "Transaction Details"
                         }
                         
+                        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.imageTapped(tapGestureRecognizer:)))
+                        self.imgBusinessUserProfileImage.isUserInteractionEnabled = true
+                        self.imgBusinessUserProfileImage.addGestureRecognizer(tapGestureRecognizer)
+                        
+                        
+                        
+                        
+                        self.tbleView.delegate = self
+                        self.tbleView.dataSource = self
+                        self.tbleView.reloadData()
+                        
+                        ERProgressHud.sharedInstance.hide()
+                    }
+                    else
+                    {
+                        // self.indicator.stopAnimating()
+                        // self.enableService()
+                        CRNotifications.showNotification(type: CRNotifications.error, title: "Error!", message:strSuccessAlert, dismissDelay: 1.5, completion:{})
+                        ERProgressHud.sharedInstance.hide()
+                    }
+                    
+                }
+                
+            case .failure(_):
+                print("Error message:\(String(describing: response.result.error))")
+                // self.indicator.stopAnimating()
+                // self.enableService()
+                ERProgressHud.sharedInstance.hide()
+                
+                let alertController = UIAlertController(title: nil, message: SERVER_ISSUE_MESSAGE_ONE+"\n"+SERVER_ISSUE_MESSAGE_TWO, preferredStyle: .actionSheet)
+                
+                let okAction = UIAlertAction(title: "OK", style: UIAlertAction.Style.default) {
+                    UIAlertAction in
+                    NSLog("OK Pressed")
+                }
+                
+                alertController.addAction(okAction)
+                
+                self.present(alertController, animated: true, completion: nil)
+                
+                break
             }
-            
-            
-            
-            /*
-            let livingArea = self.dictServerValue?["amount"] as? Int ?? 0
-            if livingArea == 0 {
-                let stringValue = String(livingArea)
-                self.lblBusinessUserName.text = "$ "+stringValue
-            }
-            else
-            {
-                let stringValue = String(livingArea)
-                self.lblBusinessUserName.text = "$ "+stringValue
-            }
-            */
-            // business user name
-            // self.lblBusinessUserName.text = (self.dictServerValue["receiverName"] as! String)
-                                        
-            // business phone
-            // self.btnCall.setTitle((self.dictServerValue["receiverContactNumber"] as! String), for: .normal)
-               
-            self.btnCall.setTitle("Paid to", for: .normal)
-            
-            // business email
-            self.btnMail.setTitle((self.dictServerValue["receiverName"] as! String), for: .normal)
-                             
-            self.lblNavigationTitle.text = "Transaction Details"
         }
-            else {
-                self.imgBusinessUserProfileImage.sd_setImage(with: URL(string: (self.dictServerValue["receiverImage"] as! String)), placeholderImage: UIImage(named: "plainBack")) // my profile image
-                
-            let strAmou:String = (self.dictServerValue?["amount"] as? String)!
-            self.lblBusinessUserName.text = "- $ "+strAmou
-            
-            /*
-                let livingArea = self.dictServerValue?["amount"] as? Int ?? 0
-                if livingArea == 0 {
-                    let stringValue = String(livingArea)
-                    self.lblBusinessUserName.text = "$ "+stringValue
-                }
-                else
-                {
-                    let stringValue = String(livingArea)
-                    self.lblBusinessUserName.text = "$ "+stringValue
-                }
-                */
-                // business user name
-                // self.lblBusinessUserName.text = (self.dictServerValue["receiverName"] as! String)
-                                            
-                // business phone
-                // self.btnCall.setTitle((self.dictServerValue["receiverContactNumber"] as! String), for: .normal)
-                   
-                self.btnCall.setTitle("Paid to", for: .normal)
-                
-                // business email
-                self.btnMail.setTitle((self.dictServerValue["receiverName"] as! String), for: .normal)
-                           
-            self.lblNavigationTitle.text = "Cashout Details"
-            }
-                  
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.imageTapped(tapGestureRecognizer:)))
-        self.imgBusinessUserProfileImage.isUserInteractionEnabled = true
-        self.imgBusinessUserProfileImage.addGestureRecognizer(tapGestureRecognizer)
-           
-            
-                                
-                                
-                                self.tbleView.delegate = self
-                                self.tbleView.dataSource = self
-                                self.tbleView.reloadData()
-                                
-                                ERProgressHud.sharedInstance.hide()
-                               }
-                               else
-                               {
-                                   // self.indicator.stopAnimating()
-                                   // self.enableService()
-                                CRNotifications.showNotification(type: CRNotifications.error, title: "Error!", message:strSuccessAlert, dismissDelay: 1.5, completion:{})
-                                   ERProgressHud.sharedInstance.hide()
-                               }
-                               
-                           }
-
-                           case .failure(_):
-                               print("Error message:\(String(describing: response.result.error))")
-                               // self.indicator.stopAnimating()
-                               // self.enableService()
-                               ERProgressHud.sharedInstance.hide()
-                               
-                               let alertController = UIAlertController(title: nil, message: SERVER_ISSUE_MESSAGE_ONE+"\n"+SERVER_ISSUE_MESSAGE_TWO, preferredStyle: .actionSheet)
-                               
-                               let okAction = UIAlertAction(title: "OK", style: UIAlertAction.Style.default) {
-                                       UIAlertAction in
-                                       NSLog("OK Pressed")
-                                   }
-                               
-                               alertController.addAction(okAction)
-                               
-                               self.present(alertController, animated: true, completion: nil)
-                               
-                               break
-                            }
-                       }
         
         
-    
-       }
+        
+    }
     @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer)
     {
         let present = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "OpenImageInFullViewId") as? OpenImageInFullView
@@ -399,188 +397,195 @@ class TransactionDetails: UIViewController {
             present!.imgString = (self.dictServerValue["receiverImage"] as! String)
         }
         
-       
+        
         self.present(present!, animated: true, completion: nil)
     }
 }
 
 
 extension TransactionDetails: UITableViewDataSource
+{
+    func numberOfSections(in tableView: UITableView) -> Int
     {
-        func numberOfSections(in tableView: UITableView) -> Int
-        {
-            return 1
-        }
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    {
+        return 4
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    {
+        let cell:TransactionTableCell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as! TransactionTableCell
         
-        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
-        {
-            return 4
-        }
+        cell.backgroundColor = .white
         
-        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-        {
-            let cell:TransactionTableCell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as! TransactionTableCell
+        /*
+         /*
+          amount = 1;
+          bankName = "";
+          cardNumber = 4242424242424242;
+          created = "Jan 2nd, 2020, 10:48 am";
+          receiverContactNumber = 9638521230;
+          receiverEmail = "purnimaevs@gmail.com";
+          receiverId = 74;
+          receiverImage = "http://demo2.evirtualservices.com/swiipe/site/img/uploads/users/1576134757images(8).jpeg";
+          receiverName = purnima;
+          senderContactNumber = 9638521230;
+          senderEmail = "purnimaevs@gmail.com";
+          senderId = 74;
+          senderImage = "http://demo2.evirtualservices.com/swiipe/site/img/uploads/users/1576134757images(8).jpeg";
+          senderName = purnima;
+          transactionID = "tok_1FwM4SBnk7ygV50qJnDcfREo";
+          transactionsId = 00226;
+          type = ADD;
+          */
+         */
+        
+        cell.lblHeader.textColor = .black
+        cell.lblDynamicText.textColor = .black
+        
+        if (dictServerValue!["type"] as! String) == "ADD" {
+            self.lblPaymentWillReflect.isHidden = false
             
-            cell.backgroundColor = .white
-            
-            /*
-             /*
-             amount = 1;
-             bankName = "";
-             cardNumber = 4242424242424242;
-             created = "Jan 2nd, 2020, 10:48 am";
-             receiverContactNumber = 9638521230;
-             receiverEmail = "purnimaevs@gmail.com";
-             receiverId = 74;
-             receiverImage = "http://demo2.evirtualservices.com/swiipe/site/img/uploads/users/1576134757images(8).jpeg";
-             receiverName = purnima;
-             senderContactNumber = 9638521230;
-             senderEmail = "purnimaevs@gmail.com";
-             senderId = 74;
-             senderImage = "http://demo2.evirtualservices.com/swiipe/site/img/uploads/users/1576134757images(8).jpeg";
-             senderName = purnima;
-             transactionID = "tok_1FwM4SBnk7ygV50qJnDcfREo";
-             transactionsId = 00226;
-             type = ADD;
-             */
-             */
-            
-            cell.lblHeader.textColor = .black
-            cell.lblDynamicText.textColor = .black
-            
-            if (dictServerValue!["type"] as! String) == "ADD" {
-                if indexPath.row == 0 {
-                    cell.lblHeader.text = "TRANSACTION ID"
-                    
-                    
-                    
-                    let livingArea = dictServerValue?["transactionsId"] as? Int ?? 0
-                    if livingArea == 0 {
-                        let stringValue = String(livingArea)
-                            cell.lblDynamicText.text = stringValue
-                    }
-                    else
-                    {
-                        let stringValue = String(livingArea)
-                        cell.lblDynamicText.text = stringValue
+            if indexPath.row == 0 {
+                cell.lblHeader.text = "TRANSACTION ID"
+                
+                
+                
+                let livingArea = dictServerValue?["transactionsId"] as? Int ?? 0
+                if livingArea == 0 {
+                    let stringValue = String(livingArea)
+                    cell.lblDynamicText.text = stringValue
+                }
+                else
+                {
+                    let stringValue = String(livingArea)
+                    cell.lblDynamicText.text = stringValue
                     // cell.lblDynamicText.text = (dictServerValue!["transactionsId"] as! String)
-                    }
-                    
-                    
-                    
                 }
-                if indexPath.row == 1 {
-                    cell.lblHeader.text = (dictServerValue!["senderName"] as! String)
-                    cell.lblDynamicText.text = (dictServerValue!["senderEmail"] as! String)
-                }
-                if indexPath.row == 2 {
-                    cell.lblHeader.text = "CONTACT NUMBER"
-                    cell.lblDynamicText.text = (dictServerValue!["senderContactNumber"] as! String)
-                }
-                if indexPath.row == 3 {
-                    cell.lblHeader.text = "FROM BANK"
-                }
+                
+                
+                
             }
-            else if (dictServerValue!["type"] as! String) == "SEND"
-            {
-                if indexPath.row == 0 {
-                    cell.lblHeader.text = "TRANSACTION ID"
-                    // print(dictGetClickedTransaction!["transactionID"])
-                    // print(type(of: dictGetClickedTransaction!["transactionID"]))
-                    // cell.lblDynamicText.text = (dictServerValue!["transactionsId"] as! String)
-                    
-                    print(type(of: (dictServerValue!["transactionsId"])))
-                    cell.lblDynamicText.text = (dictServerValue!["transactionsId"] as! String)
-                    
-                    /*
-                    let livingArea = dictServerValue?["transactionsId"] as? Int ?? 0
-                    if livingArea == 0 {
-                        let stringValue = String(livingArea)
-                            cell.lblDynamicText.text = stringValue
-                    }
-                    else
-                    {
-                        let stringValue = String(livingArea)
-                        cell.lblDynamicText.text = stringValue
-                    // cell.lblDynamicText.text = (dictServerValue!["transactionsId"] as! String)
-                    }
- */
-                    
-                    
-                }
-                if indexPath.row == 1 {
-                    cell.lblHeader.text = (dictServerValue!["receiverName"] as! String)
-                    cell.lblDynamicText.text = (dictServerValue!["receiverEmail"] as! String)
-                }
-                if indexPath.row == 2 {
-                    cell.lblHeader.text = "CONTACT NUMBER"
-                    cell.lblDynamicText.text = (dictServerValue!["receiverContactNumber"] as! String)
-                }
-                if indexPath.row == 3 {
-                    cell.lblHeader.text = "FROM BANK"
-                    cell.lblDynamicText.text = ""
-                }
+            if indexPath.row == 1 {
+                cell.lblHeader.text = (dictServerValue!["senderName"] as! String)
+                cell.lblDynamicText.text = (dictServerValue!["senderEmail"] as! String)
             }
-            else
-            {
-                           if indexPath.row == 0 {
-                               cell.lblHeader.text = "TRANSACTION ID"
-                               // print(dictGetClickedTransaction!["transactionID"])
-                               // print(type(of: dictGetClickedTransaction!["transactionID"]))
-                               // cell.lblDynamicText.text = (dictServerValue!["transactionsId"] as! String)
-                               
-                               print(type(of: (dictServerValue!["transactionsId"])))
-                               cell.lblDynamicText.text = (dictServerValue!["transactionsId"] as! String)
-                               
-                               /*
-                               let livingArea = dictServerValue?["transactionsId"] as? Int ?? 0
-                               if livingArea == 0 {
-                                   let stringValue = String(livingArea)
-                                       cell.lblDynamicText.text = stringValue
-                               }
-                               else
-                               {
-                                   let stringValue = String(livingArea)
-                                   cell.lblDynamicText.text = stringValue
-                               // cell.lblDynamicText.text = (dictServerValue!["transactionsId"] as! String)
-                               }
-            */
-                               
-                               
-                           }
-                           if indexPath.row == 1 {
-                               cell.lblHeader.text = (dictServerValue!["receiverName"] as! String)
-                               cell.lblDynamicText.text = (dictServerValue!["receiverEmail"] as! String)
-                           }
-                           if indexPath.row == 2 {
-                               cell.lblHeader.text = "CONTACT NUMBER"
-                               cell.lblDynamicText.text = (dictServerValue!["receiverContactNumber"] as! String)
-                           }
-                           if indexPath.row == 3 {
-                               cell.lblHeader.text = "FROM BANK"
-                               cell.lblDynamicText.text = ""
-                           }
-                       }
+            if indexPath.row == 2 {
+                cell.lblHeader.text = "CONTACT NUMBER"
+                cell.lblDynamicText.text = (dictServerValue!["senderContactNumber"] as! String)
+            }
+            if indexPath.row == 3 {
+                cell.lblHeader.text = "FROM BANK"
+            }
+        }
+        else if (dictServerValue!["type"] as! String) == "SEND" {
             
+            self.lblPaymentWillReflect.isHidden = false
             
-            return cell
+            if indexPath.row == 0 {
+                cell.lblHeader.text = "TRANSACTION ID"
+                // print(dictGetClickedTransaction!["transactionID"])
+                // print(type(of: dictGetClickedTransaction!["transactionID"]))
+                // cell.lblDynamicText.text = (dictServerValue!["transactionsId"] as! String)
+                
+                print(type(of: (dictServerValue!["transactionsId"])))
+                cell.lblDynamicText.text = (dictServerValue!["transactionsId"] as! String)
+                
+                /*
+                 let livingArea = dictServerValue?["transactionsId"] as? Int ?? 0
+                 if livingArea == 0 {
+                 let stringValue = String(livingArea)
+                 cell.lblDynamicText.text = stringValue
+                 }
+                 else
+                 {
+                 let stringValue = String(livingArea)
+                 cell.lblDynamicText.text = stringValue
+                 // cell.lblDynamicText.text = (dictServerValue!["transactionsId"] as! String)
+                 }
+                 */
+                
+                
+            }
+            if indexPath.row == 1 {
+                cell.lblHeader.text = (dictServerValue!["receiverName"] as! String)
+                cell.lblDynamicText.text = (dictServerValue!["receiverEmail"] as! String)
+            }
+            if indexPath.row == 2 {
+                cell.lblHeader.text = "CONTACT NUMBER"
+                cell.lblDynamicText.text = (dictServerValue!["receiverContactNumber"] as! String)
+            }
+            if indexPath.row == 3 {
+                cell.lblHeader.text = "FROM BANK"
+                cell.lblDynamicText.text = ""
+            }
+        } else {
+            
+            self.lblPaymentWillReflect.isHidden = true
+            
+            if indexPath.row == 0 {
+                cell.lblHeader.text = "TRANSACTION ID"
+                // print(dictGetClickedTransaction!["transactionID"])
+                // print(type(of: dictGetClickedTransaction!["transactionID"]))
+                // cell.lblDynamicText.text = (dictServerValue!["transactionsId"] as! String)
+                
+                 cell.lblDynamicText.text = (dictServerValue!["transactionsId"] as! String)
+                
+                
+                
+            }
+            if indexPath.row == 1 {
+                
+                cell.lblHeader.text = "Name on the card"
+                cell.lblDynamicText.text = (dictServerValue!["nameOnCard"] as! String)
+            }
+            if indexPath.row == 2 {
+                cell.lblHeader.text = "CONTACT NUMBER"
+                cell.lblDynamicText.text = (dictServerValue!["receiverContactNumber"] as! String)
+            }
+            if indexPath.row == 3 {
+                cell.lblHeader.text = "FROM BANK"
+                cell.lblDynamicText.text = ""
+            }
         }
         
+        
+        return cell
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView .deselectRow(at: indexPath, animated: true)
         // let settingsVCId = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "SendMoneyId") as? SendMoney
         // self.navigationController?.pushViewController(settingsVCId!, animated: true)
     }
     
-        func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
-        {
-            return 80
-        }
-        
-    }
-
-
-    extension TransactionDetails: UITableViewDelegate
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
     {
+        if (dictServerValue!["type"] as! String) == "ADD" {
+            return 80
+        } else if (dictServerValue!["type"] as! String) == "SEND" {
+            return 80
+        } else {
+            if indexPath.row == 0 {
+                return 80
+            } else if indexPath.row == 1 {
+                return 80
+            } else {
+                return 0
+            }
+            
+        }
+            
         
     }
+    
+}
+
+
+extension TransactionDetails: UITableViewDelegate
+{
+    
+}

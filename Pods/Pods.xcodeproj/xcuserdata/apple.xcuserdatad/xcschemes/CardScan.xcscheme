@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1300"
+   LastUpgradeVersion = "1240"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "7A35B702D709EA37681B6545A4E1EF1B"
-               BuildableName = "CardScan.framework"
+               BuildableName = "CardScan"
                BlueprintName = "CardScan"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>

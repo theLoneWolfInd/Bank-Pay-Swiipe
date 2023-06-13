@@ -19,8 +19,8 @@ let base_url_create_Stripe_customer = "http://app.swiipe-pay.com/site/webroot/st
 
 
 
-let payment_url_for_add_money = "http://app.swiipe-pay.com/site/webroot/BMPstrippayment/charge_test.php"
-// let payment_url_for_add_money = "http://app.swiipe-pay.com/site/webroot/BMPstrippayment/charge.php"
+// let payment_url_for_add_money = "http://app.swiipe-pay.com/site/webroot/BMPstrippayment/charge_test.php"
+let payment_url_for_add_money = "http://app.swiipe-pay.com/site/webroot/BMPstrippayment/charge.php"
 
 
 // 0 ,//// 179 , 138

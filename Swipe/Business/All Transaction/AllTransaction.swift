@@ -14,11 +14,15 @@ import CRNotifications
 
 class AllTransaction: UIViewController {
 
+    var page : Int! = 1
+    var loadMore : Int! = 1;
     
     let cellReuseIdentifier = "allTransactionTableCell"
     
     // array list
-    var arrListOfAllTransaction:Array<Any>!
+    // var arrListOfAllTransaction:Array<Any>!
+    
+    var arr_list_of_all_transactions:NSMutableArray! = []
     
     @IBOutlet weak var navigationBar:UIView! {
         didSet {
@@ -85,7 +89,7 @@ class AllTransaction: UIViewController {
             // self.view.backgroundColor = BUTTON_BACKGROUND_COLOR_BLUE
         }
         
-        self.allTransactionWB()
+        self.allTransactionWB(pageNumber: 1)
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
@@ -109,8 +113,29 @@ class AllTransaction: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+                
+        if scrollView == self.tbleView {
+            let isReachingEnd = scrollView.contentOffset.y >= 0
+                && scrollView.contentOffset.y >= (scrollView.contentSize.height - scrollView.frame.size.height)
+            if(isReachingEnd) {
+                if(loadMore == 1) {
+                    loadMore = 0
+                    page += 1
+                    print(page as Any)
+                    
+                    
+                        self.allTransactionWB(pageNumber: page)
+                    
+                    
+                }
+            }
+        }
+    }
+    
     //MARK:- ALL TRANSACTION
-    @objc func allTransactionWB() {
+    @objc func allTransactionWB(pageNumber:Int) {
            // ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
            
         
@@ -136,7 +161,8 @@ class AllTransaction: UIViewController {
             
                    parameters = [
                        "action"        : "transactionlist",
-                       "userId"        : String(myString)
+                       "userId"        : String(myString),
+                       "pageNo"    : pageNumber,
                    ]
         }
                 
@@ -152,7 +178,7 @@ class AllTransaction: UIViewController {
 
                                
                                let JSON = data as! NSDictionary
-                                   // print(JSON)
+                                    print(JSON)
                                
                                var strSuccess : String!
                                strSuccess = JSON["status"]as Any as? String
@@ -169,13 +195,20 @@ class AllTransaction: UIViewController {
                                 
                                 var ar : NSArray!
                                 ar = (JSON["data"] as! Array<Any>) as NSArray
-                                self.arrListOfAllTransaction = (ar as! Array<Any>)
-                                                             
+                                   self.arr_list_of_all_transactions.addObjects(from: ar as! [Any])
+                                   
+                                // self.arrListOfAllTransaction = (ar as! Array<Any>)
+                                   // arr_list_of_all_transactions
+                                   
+                                   
+                                   
                                 self.tbleView.delegate = self
                                 self.tbleView.dataSource = self
                                 self.tbleView.reloadData()
-                                
+                                   self.loadMore = 1
+                                   
                                 ERProgressHud.sharedInstance.hide()
+                                   
                                }
                                else
                                {
@@ -212,6 +245,11 @@ class AllTransaction: UIViewController {
     
        }
     
+    
+    
+    
+    
+    
 }
 
 extension AllTransaction: UITableViewDataSource
@@ -221,7 +259,7 @@ extension AllTransaction: UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return arrListOfAllTransaction.count
+        return self.arr_list_of_all_transactions.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -249,7 +287,7 @@ extension AllTransaction: UITableViewDataSource
         
         
         
-        let item = arrListOfAllTransaction[indexPath.row] as? [String:Any]
+        let item = arr_list_of_all_transactions[indexPath.row] as? [String:Any]
         print(item as Any)
         
         // account number
@@ -328,13 +366,14 @@ extension AllTransaction: UITableViewDataSource
             
             cell.imgProfilePicture.backgroundColor = .clear
             
-        }
-        else {
-            cell.lblAmount.text = "- $ "+((item?["amount"] as? String)!)
-            cell.lblAmount.textColor = .systemRed
+        } else if (item!["type"] as! String) == "CardProcess" {
+            
+            cell.lblAmount.text = "+ $ "+((item?["amount"] as? String)!)
+            cell.lblAmount.textColor = .systemTeal
             
             // bank name
-            cell.lblBankName.text = "Cashout" //(item!["receiverName"] as! String)
+            cell.lblBankName.text = ((item?["nameOnCard"] as? String)!)
+            // cell.lblBankName.textColor = .systemTeal
             
             // my image
             // image
@@ -473,10 +512,15 @@ extension AllTransaction: UITableViewDataSource
         // dictGetClickedTransaction
         // pushToPageTransactionDetails()
         
-        let item = arrListOfAllTransaction[indexPath.row] as? [String:Any]
+        let item = self.arr_list_of_all_transactions[indexPath.row] as? [String:Any]
         
         let settingsVCId = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "TransactionDetailsId") as? TransactionDetails
         settingsVCId!.dictGetClickedTransaction = item as NSDictionary?
+        
+        if (item!["type"] as! String) == "CardProcess" {
+            settingsVCId!.str_select_profile = "yes"
+        }
+        
         self.navigationController?.pushViewController(settingsVCId!, animated: true)
         
     }

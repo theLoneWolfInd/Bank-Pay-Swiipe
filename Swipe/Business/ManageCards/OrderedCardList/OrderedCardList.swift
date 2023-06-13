@@ -16,7 +16,12 @@ class OrderedCardList: UIViewController {
     
     let cellReuseIdentifier = "orderedCardListTableCell"
        
-    var arrListOfOrderedCard:Array<Any>!
+    // var arrListOfOrderedCard:Array<Any>!
+    
+    var arr_list_of_all_ordered_cards:NSMutableArray! = []
+    
+    var page : Int! = 1
+    var loadMore : Int! = 1;
     
     @IBOutlet weak var navigationBar:UIView! {
            didSet {
@@ -60,7 +65,7 @@ class OrderedCardList: UIViewController {
             navigationBar.backgroundColor = NAVIGATION_BUSINESS_BACKGROUND_COLOR
             // self.view.backgroundColor = BUTTON_BACKGROUND_COLOR_BLUE
         }
-        self.orderedCardList()
+        self.orderedCardList(pageNumber: 1)
     }
     @objc func sideBarMenu() {
         if revealViewController() != nil {
@@ -83,8 +88,29 @@ class OrderedCardList: UIViewController {
         return .lightContent
     }
     
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+                
+        if scrollView == self.tbleView {
+            let isReachingEnd = scrollView.contentOffset.y >= 0
+                && scrollView.contentOffset.y >= (scrollView.contentSize.height - scrollView.frame.size.height)
+            if(isReachingEnd) {
+                if(loadMore == 1) {
+                    loadMore = 0
+                    page += 1
+                    print(page as Any)
+                    
+                    
+                        self.orderedCardList(pageNumber: page)
+                    
+                    
+                }
+            }
+        }
+    }
+    
     // MARK:- ORDERED CARD LIST
-    @objc func orderedCardList() {
+    @objc func orderedCardList(pageNumber:Int) {
            
            
         let defaults = UserDefaults.standard
@@ -116,8 +142,9 @@ class OrderedCardList: UIViewController {
                    parameters = [
                        "action"     : "requestcardlist",
                         "userId"    : String(myString),
-                        "pageNo"      : "",
+                        
                         "type"      : "DEBIT",
+                       "pageNo"    : pageNumber,
                    ]
         }
                 
@@ -145,12 +172,15 @@ class OrderedCardList: UIViewController {
                                {
                                    var ar : NSArray!
                                    ar = (JSON["data"] as! Array<Any>) as NSArray
-                                   self.arrListOfOrderedCard = (ar as! Array<Any>)
-                                 
+                                   // self.arrListOfOrderedCard = (ar as! Array<Any>)
+                                   self.arr_list_of_all_ordered_cards.addObjects(from: ar as! [Any])
+                                   
                                 self.tbleView.delegate = self
                                 self.tbleView.dataSource = self
                                 
                                 self.tbleView.reloadData()
+                                   self.loadMore = 1
+                                   
                                 ERProgressHud.sharedInstance.hide()
                                }
                                else
@@ -193,7 +223,7 @@ extension OrderedCardList: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return arrListOfOrderedCard.count
+        return self.arr_list_of_all_ordered_cards.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -201,7 +231,7 @@ extension OrderedCardList: UITableViewDataSource {
         
         cell.backgroundColor = .white
         
-         let item = arrListOfOrderedCard[indexPath.row] as? [String:Any]
+        let item = self.arr_list_of_all_ordered_cards[indexPath.row] as? [String:Any]
         
         /*
          accountName = "";

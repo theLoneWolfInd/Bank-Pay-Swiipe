@@ -17,6 +17,7 @@
 		180D54EB2365FCAD0037AA35 /* ProceedToPay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180D54EA2365FCAD0037AA35 /* ProceedToPay.swift */; };
 		180DA1ED23646477001C15B7 /* BusinessDashbaord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180DA1EC23646477001C15B7 /* BusinessDashbaord.swift */; };
 		180DA1EF236467D9001C15B7 /* BusinessDashboardCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180DA1EE236467D9001C15B7 /* BusinessDashboardCollectionCell.swift */; };
+		1823176228226C3A00ED5ED3 /* total_users_list.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1823176128226C3A00ED5ED3 /* total_users_list.swift */; };
 		1829569F2420FFA5000ED57A /* RequestMoneyUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1829569E2420FFA5000ED57A /* RequestMoneyUser.swift */; };
 		182956A12420FFCA000ED57A /* RequestMoneyUserTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182956A02420FFCA000ED57A /* RequestMoneyUserTableCell.swift */; };
 		182FEBF32366BB12002A08F0 /* AddMoney.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182FEBF22366BB12002A08F0 /* AddMoney.swift */; };
@@ -66,7 +67,6 @@
 		18F10D1A2365D10B001F8862 /* TransactionDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18F10D192365D10B001F8862 /* TransactionDetails.swift */; };
 		18F10D1C2365D305001F8862 /* TransactionTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18F10D1B2365D305001F8862 /* TransactionTableCell.swift */; };
 		18F50A0B2370892100863EA8 /* ActivateCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18F50A0A2370892100863EA8 /* ActivateCard.swift */; };
-		31FCC2ED8739DFBD0A69C90F /* Pods_Swipe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAEEA02F7C01D72EC6BB40B5 /* Pods_Swipe.framework */; };
 		901D9485373EA84A402A409B /* Pods_SwipeTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2470423C4DAA816B20D8801 /* Pods_SwipeTests.framework */; };
 		A41DB65423CEE10600BE9268 /* ProcessingCardList.swift in Sources */ = {isa = PBXBuildFile; fileRef = A41DB65323CEE10600BE9268 /* ProcessingCardList.swift */; };
 		A41DB65623CEE11E00BE9268 /* ProcessingCardListTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A41DB65523CEE11E00BE9268 /* ProcessingCardListTableCell.swift */; };
@@ -149,6 +149,7 @@
 		180D54EA2365FCAD0037AA35 /* ProceedToPay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProceedToPay.swift; sourceTree = "<group>"; };
 		180DA1EC23646477001C15B7 /* BusinessDashbaord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusinessDashbaord.swift; sourceTree = "<group>"; };
 		180DA1EE236467D9001C15B7 /* BusinessDashboardCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusinessDashboardCollectionCell.swift; sourceTree = "<group>"; };
+		1823176128226C3A00ED5ED3 /* total_users_list.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = total_users_list.swift; sourceTree = "<group>"; };
 		1829569E2420FFA5000ED57A /* RequestMoneyUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestMoneyUser.swift; sourceTree = "<group>"; };
 		182956A02420FFCA000ED57A /* RequestMoneyUserTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestMoneyUserTableCell.swift; sourceTree = "<group>"; };
 		182FEBF22366BB12002A08F0 /* AddMoney.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMoney.swift; sourceTree = "<group>"; };
@@ -269,7 +270,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				31FCC2ED8739DFBD0A69C90F /* Pods_Swipe.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -352,6 +352,14 @@
 				180DA1EE236467D9001C15B7 /* BusinessDashboardCollectionCell.swift */,
 			);
 			path = Dashbaord;
+			sourceTree = "<group>";
+		};
+		1823176028226C1C00ED5ED3 /* total_users_list */ = {
+			isa = PBXGroup;
+			children = (
+				1823176128226C3A00ED5ED3 /* total_users_list.swift */,
+			);
+			path = total_users_list;
 			sourceTree = "<group>";
 		};
 		1829569D2420FF8C000ED57A /* RequestMoneyUser */ = {
@@ -928,6 +936,7 @@
 		A4C527D823FD18FB0035FE14 /* AddNewGiftCard */ = {
 			isa = PBXGroup;
 			children = (
+				1823176028226C1C00ED5ED3 /* total_users_list */,
 				A4C527D923FD19130035FE14 /* AddNewGiftCard.swift */,
 				A4C527DB23FD19460035FE14 /* AddNewGiftCardTableCell.swift */,
 			);
@@ -1285,6 +1294,7 @@
 				18F10D1A2365D10B001F8862 /* TransactionDetails.swift in Sources */,
 				A446DAC823D97A760013A280 /* AddProcessCardTwo.swift in Sources */,
 				A4870C4323C8737B008328D2 /* EditProfile.swift in Sources */,
+				1823176228226C3A00ED5ED3 /* total_users_list.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1390,7 +1400,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1445,7 +1455,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -1464,15 +1474,15 @@
 				CODE_SIGN_ENTITLEMENTS = Swipe/Swiipe.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = NHVZESNL9B;
+				DEVELOPMENT_TEAM = 2X4SN92FZ9;
 				INFOPLIST_FILE = Swipe/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.5;
-				PRODUCT_BUNDLE_IDENTIFIER = com.evs.swiipepay1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.evs.swiipepay-production2";
 				PRODUCT_NAME = Swiipe;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Swipe/SidebarMenu/SidebarMenu-Bridging-Header.h";
@@ -1491,15 +1501,15 @@
 				CODE_SIGN_ENTITLEMENTS = Swipe/Swiipe.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = NHVZESNL9B;
+				DEVELOPMENT_TEAM = 2X4SN92FZ9;
 				INFOPLIST_FILE = Swipe/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.5;
-				PRODUCT_BUNDLE_IDENTIFIER = com.evs.swiipepay1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.evs.swiipepay-production2";
 				PRODUCT_NAME = Swiipe;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Swipe/SidebarMenu/SidebarMenu-Bridging-Header.h";
@@ -1526,7 +1536,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Swipe.app/Swipe";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Swiipe.app/Swiipe";
 			};
 			name = Debug;
 		};
@@ -1548,7 +1558,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Swipe.app/Swipe";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Swiipe.app/Swiipe";
 			};
 			name = Release;
 		};

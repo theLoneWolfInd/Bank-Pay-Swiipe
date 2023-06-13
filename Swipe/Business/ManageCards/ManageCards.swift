@@ -16,7 +16,12 @@ class ManageCards: UIViewController {
     
     let cellReuseIdentifier = "manageCardsTableCell"
     
-    var arrListOfCards:Array<Any>!
+    // var arrListOfCards:Array<Any>!
+    
+    var arr_list_of_all_cards:NSMutableArray! = []
+    
+    var page : Int! = 1
+    var loadMore : Int! = 1;
     
     var noDataLabel: UILabel!
     
@@ -132,7 +137,7 @@ class ManageCards: UIViewController {
         navigationController?.setNavigationBarHidden(true, animated: animated)
         
         //MARK:- LIST OF CARDS WEBSERVICE CALLS FROM HERE
-        self.manageCardList()
+        self.manageCardList(pageNumber: 1)
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -143,9 +148,28 @@ class ManageCards: UIViewController {
         self.navigationController?.pushViewController(push!, animated: true)
     }
     
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+                
+        if scrollView == self.tbleView {
+            let isReachingEnd = scrollView.contentOffset.y >= 0
+                && scrollView.contentOffset.y >= (scrollView.contentSize.height - scrollView.frame.size.height)
+            if(isReachingEnd) {
+                if(loadMore == 1) {
+                    loadMore = 0
+                    page += 1
+                    print(page as Any)
+                    
+                    
+                        self.manageCardList(pageNumber: page)
+                    
+                    
+                }
+            }
+        }
+    }
     
     // MARK:- MANAGE CARDS LIST WEBSERVICE
-    @objc func manageCardList() {
+    @objc func manageCardList(pageNumber:Int) {
            //
         
         let defaults = UserDefaults.standard
@@ -174,7 +198,8 @@ class ManageCards: UIViewController {
                    parameters = [
                        "action"     : "listcard",
                         "userId"    : String(myString),
-                        "type"      : "DEBIT"
+                        "type"      : "DEBIT",
+                       "pageNo"    : pageNumber,
                    ]
         }
                 
@@ -209,7 +234,8 @@ class ManageCards: UIViewController {
                                  */
                                    var ar : NSArray!
                                    ar = (JSON["data"] as! Array<Any>) as NSArray
-                                   self.arrListOfCards = (ar as! Array<Any>)
+                                   // self.arrListOfCards = (ar as! Array<Any>)
+                                   self.arr_list_of_all_cards.addObjects(from: ar as! [Any])
                                    
                                  //CRNotifications.showNotification(type: CRNotifications.success, title: "Message!", message:strSuccessAlert, dismissDelay: 1.5, completion:{})
                                 
@@ -226,6 +252,8 @@ class ManageCards: UIViewController {
                                 self.tbleView.dataSource = self
                                 
                                 self.tbleView.reloadData()
+                                   self.loadMore = 1
+                                   
                                 ERProgressHud.sharedInstance.hide()
                                }
                                else
@@ -278,7 +306,7 @@ extension ManageCards: UITableViewDataSource
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        return arrListOfCards.count
+        return self.arr_list_of_all_cards.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
@@ -287,7 +315,7 @@ extension ManageCards: UITableViewDataSource
         
         cell.backgroundColor = .white
         
-        let item = arrListOfCards[indexPath.row] as? [String:Any]
+        let item = self.arr_list_of_all_cards[indexPath.row] as? [String:Any]
         /*
          CVV = 245;
          cardId = 32;
@@ -329,7 +357,7 @@ extension ManageCards: UITableViewDataSource
     @objc func deleteCard(_ sender:UIButton) {
         // print(sender.tag)
         
-        let item = arrListOfCards[sender.tag] as? [String:Any]
+        let item = self.arr_list_of_all_cards[sender.tag] as? [String:Any]
         
         let alert = UIAlertController(title: "Delete", message: "Are you sure you want to Delete this card ?"+"\n\n"+"Name: "+(item!["nameOnCard"] as! String)+"\n"+"Number :"+(item!["cardNumber"] as! String), preferredStyle: .alert)
 
@@ -417,7 +445,7 @@ extension ManageCards: UITableViewDataSource
                                 CRNotifications.showNotification(type: CRNotifications.success, title: "Success!", message:strSuccessAlert, dismissDelay: 1.5, completion:{})
                                 
                                 // ERProgressHud.sharedInstance.hide()
-                                self.manageCardList()
+                                   self.manageCardList(pageNumber: 1)
                                 
                                }
                                else
@@ -463,7 +491,7 @@ extension ManageCards: UITableViewDataSource
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView .deselectRow(at: indexPath, animated: true)
      
-         let item = arrListOfCards[indexPath.row] as? [String:Any]
+        let item = self.arr_list_of_all_cards[indexPath.row] as? [String:Any]
         
         let push = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "EditManageCardId") as? EditManageCard
          // push!.strWhoIamEditOrAdd = "editCard"

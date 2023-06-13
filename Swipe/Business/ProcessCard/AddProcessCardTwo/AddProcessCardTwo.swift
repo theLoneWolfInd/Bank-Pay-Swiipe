@@ -14,8 +14,7 @@ import CRNotifications
 import Stripe
 import CardScan
 
-
-class AddProcessCardTwo: UIViewController,UITextFieldDelegate,ScanEvents, ScanDelegate, FullScanStringsDataSource, TestingImageDataSource {
+class AddProcessCardTwo: UIViewController,UITextFieldDelegate, ScanDelegate, FullScanStringsDataSource, TestingImageDataSource {
     
     func onNumberRecognized(number: String, expiry: Expiry?, numberBoundingBox: CGRect, expiryBoundingBox: CGRect?, croppedCardSize: CGSize, squareCardImage: CGImage, fullCardImage: CGImage) {
         print("number recognized")
@@ -932,11 +931,22 @@ extension AddProcessCardTwo: UITableViewDataSource {
             CRNotifications.showNotification(type: CRNotifications.error, title: "Error!", message:"Phone number should not be Empty", dismissDelay: 1.5, completion:{})
         }*/
         else {
+            
             // addWB()
             ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
             
             let indexPath = IndexPath(row: 0, section: 0)
             let cell = self.tbleView.cellForRow(at: indexPath) as! AddProcessCardTwoTableCell
+            
+            /*let cardParams: STPCardParams = STPCardParams()
+                                   cardParams.number = mCardText!.cardNumber
+                                   cardParams.expMonth = mCardText!.expirationMonth
+                                   cardParams.expYear = mCardText!.expirationYear
+                                   cardParams.cvc = mCardText!.cvc
+            STPAPIClient.shared().createToken(withCard: cardParams, completion: { (token, error) -> Void in
+                    if error == nil {}
+                    else {}
+                })*/
             
             let cardParams = STPCardParams()
             

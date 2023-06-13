@@ -16,7 +16,12 @@ class CashoutTransaction: UIViewController {
 
     let cellReuseIdentifier = "cashoutTransactionTableCell"
     
-    var arrListOfAllTransaction:Array<Any>!
+    // var arrListOfAllTransaction:Array<Any>!
+    
+    var arr_list_of_all_cashout_transaction:NSMutableArray! = []
+    
+    var page : Int! = 1
+    var loadMore : Int! = 1;
     
     @IBOutlet weak var navigationBar:UIView! {
            didSet {
@@ -54,7 +59,8 @@ class CashoutTransaction: UIViewController {
          
          self.sideBarMenuClick()
          
-        cashoutTransactionWB()
+        self.cashoutTransactionWB(pageNumber: 1)
+        
          if let person = UserDefaults.standard.value(forKey: "keyLoginFullData") as? [String:Any]
          {
              let livingArea = person["wallet"] as? Int ?? 0
@@ -114,8 +120,30 @@ class CashoutTransaction: UIViewController {
              }
        }
     
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+                
+        if scrollView == self.tbleView {
+            let isReachingEnd = scrollView.contentOffset.y >= 0
+                && scrollView.contentOffset.y >= (scrollView.contentSize.height - scrollView.frame.size.height)
+            if(isReachingEnd) {
+                if(loadMore == 1) {
+                    loadMore = 0
+                    page += 1
+                    print(page as Any)
+                    
+                    
+                        self.cashoutTransactionWB(pageNumber: page)
+                    
+                    
+                }
+            }
+        }
+    }
+    
+    
     //MARK:- CASH OUT TRANSACTION
-    @objc func cashoutTransactionWB() {
+    @objc func cashoutTransactionWB(pageNumber:Int) {
         // ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
            
         let defaults = UserDefaults.standard
@@ -140,7 +168,8 @@ class CashoutTransaction: UIViewController {
             
                 parameters = [
                     "action"         : "cashoutlist",
-                    "userId"         : String(myString)
+                    "userId"         : String(myString),
+                    "pageNo"    : pageNumber,
                 ]
          }
                 
@@ -170,13 +199,15 @@ class CashoutTransaction: UIViewController {
                                 
                                 var ar : NSArray!
                                 ar = (JSON["data"] as! Array<Any>) as NSArray
-                                self.arrListOfAllTransaction = (ar as! Array<Any>)
-                                
+                                // self.arrListOfAllTransaction = (ar as! Array<Any>)
+                                   self.arr_list_of_all_cashout_transaction.addObjects(from: ar as! [Any])
+                                   
                                 ERProgressHud.sharedInstance.hide()
                                 
                                 self.tbleView.delegate = self
                                 self.tbleView.dataSource = self
-                                
+                                   self.loadMore = 1
+                                   
                                 self.tbleView.reloadData()
                                }
                                else
@@ -221,7 +252,7 @@ extension CashoutTransaction: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-         return arrListOfAllTransaction.count
+        return self.arr_list_of_all_cashout_transaction.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -246,7 +277,7 @@ extension CashoutTransaction: UITableViewDataSource {
          */
          
          */
-        let item = arrListOfAllTransaction[indexPath.row] as? [String:Any]
+        let item = self.arr_list_of_all_cashout_transaction[indexPath.row] as? [String:Any]
         
         cell.lblTitle.text  = "Cashout"//(item!["senderName"] as! String)
         cell.lblSubTitle.text = (item!["created"] as! String)
@@ -312,7 +343,7 @@ extension CashoutTransaction: UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView .deselectRow(at: indexPath, animated: true)
         
-        let item = arrListOfAllTransaction[indexPath.row] as? [String:Any]
+        let item = self.arr_list_of_all_cashout_transaction[indexPath.row] as? [String:Any]
         
         let settingsVCId = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "TransactionDetailsId") as? TransactionDetails
         settingsVCId!.dictGetClickedTransaction = item as NSDictionary?

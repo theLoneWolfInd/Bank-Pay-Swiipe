@@ -15,7 +15,7 @@ import CRNotifications
 import BottomPopup
 
 class AddNewGiftCard: UIViewController {
-
+    
     let cellReuseIdentifier = "addNewGiftCardTableCell"
     
     var arrListOfOrderedCard:Array<Any>!
@@ -33,35 +33,35 @@ class AddNewGiftCard: UIViewController {
     let kDismissDurationMaxValue = 3.0
     
     @IBOutlet weak var navigationBar:UIView! {
-           didSet {
-                navigationBar.backgroundColor = NAVIGATION_BUSINESS_BACKGROUND_COLOR
-           }
-       }
-       
-       @IBOutlet weak var lblNavigationTitle:UILabel! {
-           didSet {
-               lblNavigationTitle.text = "ADD GIFT CARD"
-               lblNavigationTitle.textColor = .white
-           }
-       }
-       
+        didSet {
+            navigationBar.backgroundColor = NAVIGATION_BUSINESS_BACKGROUND_COLOR
+        }
+    }
+    
+    @IBOutlet weak var lblNavigationTitle:UILabel! {
+        didSet {
+            lblNavigationTitle.text = "ADD GIFT CARD"
+            lblNavigationTitle.textColor = .white
+        }
+    }
+    
     @IBOutlet weak var btnBack:UIButton!
     
     @IBOutlet weak var btnAdd:UIButton!
     
     @IBOutlet weak var tbleView: UITableView! {
-            didSet {
-                self.tbleView.delegate = self
-                self.tbleView.dataSource = self
-                self.tbleView.backgroundColor = .white
-                self.tbleView.tableFooterView = UIView.init(frame: CGRect(origin: .zero, size: .zero))
-
-            }
+        didSet {
+            self.tbleView.delegate = self
+            self.tbleView.dataSource = self
+            self.tbleView.backgroundColor = .white
+            self.tbleView.tableFooterView = UIView.init(frame: CGRect(origin: .zero, size: .zero))
+            
+        }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         btnBack.setImage(UIImage(named: "menuWhite"), for: .normal)
         sideBarMenu()
         
@@ -76,15 +76,15 @@ class AddNewGiftCard: UIViewController {
             navigationBar.backgroundColor = NAVIGATION_BUSINESS_BACKGROUND_COLOR
             // self.view.backgroundColor = BUTTON_BACKGROUND_COLOR_BLUE
         }
-        allUsersWB()
+        // allUsersWB()
         
     }
     @objc func sideBarMenu() {
         if revealViewController() != nil {
-        btnBack.addTarget(self.revealViewController(), action: #selector(SWRevealViewController.revealToggle(_:)), for: .touchUpInside)
+            btnBack.addTarget(self.revealViewController(), action: #selector(SWRevealViewController.revealToggle(_:)), for: .touchUpInside)
             
-        revealViewController().rearViewRevealWidth = 300
-        view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
+            revealViewController().rearViewRevealWidth = 300
+            view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
         }
     }
     @objc func backClickMethod() {
@@ -94,6 +94,19 @@ class AddNewGiftCard: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         navigationController?.setNavigationBarHidden(true, animated: animated)
+        
+        if let person_2 = UserDefaults.standard.value(forKey: "key_save_total_users") as? [String:Any] {
+            
+            print(person_2 as Any)
+            
+            let indexPath = IndexPath.init(row: 0, section: 0)
+            let cell = self.tbleView.cellForRow(at: indexPath) as! AddNewGiftCardTableCell
+            
+            cell.txtSelectUser.text = (person_2["userName"] as! String)
+            
+            
+            
+        }
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -142,115 +155,123 @@ class AddNewGiftCard: UIViewController {
         let cell = self.tbleView.cellForRow(at: indexPath) as! AddNewGiftCardTableCell
         
         let defaults = UserDefaults.standard
-            let userName = defaults.string(forKey: "KeyLoginPersonal")
-            if userName == "loginViaPersonal" {
-                // personal user
-                 ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
+        let userName = defaults.string(forKey: "KeyLoginPersonal")
+        if userName == "loginViaPersonal" {
+            // personal user
+            ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
+            
+        }
+        else {
+            ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
+        }
+        
+        let urlString = BASE_URL_SWIIPE
+        
+        var parameters:Dictionary<AnyHashable, Any>!
+        
+        if let person = UserDefaults.standard.value(forKey: "keyLoginFullData") as? [String:Any] {
+            
+            if let person_2 = UserDefaults.standard.value(forKey: "key_save_total_users") as? [String:Any] {
                 
-            }
-            else {
-                 ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
-            }
-            
-            let urlString = BASE_URL_SWIIPE
-                   
-            var parameters:Dictionary<AnyHashable, Any>!
-            
-            if let person = UserDefaults.standard.value(forKey: "keyLoginFullData") as? [String:Any]
-            {
+                print(person_2 as Any)
+                
+                
                 let x : Int = (person["userId"] as! Int)
                 let myString = String(x)
                 /*
-                [action] => requestcard
-                [userId] => 38
-                [giftFor] => 5
-                [occasion] => hi
-                [amount] => 100.855
-                [address] => t
-                [state] => rfg
-                [postalcode] => qwr
-                [type] => GIFT
-                */
+                 [action] => requestcard
+                 [userId] => 38
+                 [giftFor] => 5
+                 [occasion] => hi
+                 [amount] => 100.855
+                 [address] => t
+                 [state] => rfg
+                 [postalcode] => qwr
+                 [type] => GIFT
+                 */
                 
-                       parameters = [
-                           "action"     : "requestcard",
-                            "userId"    : String(myString),
-                            "giftFor"     : String(sendToId),
-                            "occasion"     : String(cell.txtOccasion.text!),
-                            "amount"     : String(cell.txtGiftAmount.text!),
-                            "address"     : String(cell.txtAddress.text!),
-                            "state"     : String(cell.txtState.text!),
-                            "postalcode"     : String(cell.txtPostalCode.text!),
-                            "type"     : "GIFT"
-                       ]
-                
+                parameters = [
+                    "action"     : "requestcard",
+                    "userId"    : String(myString),
+                    "giftFor"   : "\(person_2["userId"]!)",
+                    "occasion"  : String(cell.txtOccasion.text!),
+                    "amount"    : String(cell.txtGiftAmount.text!),
+                    "address"   : String(cell.txtAddress.text!),
+                    "state"     : String(cell.txtState.text!),
+                    "postalcode"    : String(cell.txtPostalCode.text!),
+                    "type"      : "GIFT"
+                ]
                 
                 
                 
             }
+        }
+        
+        print("parameters-------\(String(describing: parameters))")
+        
+        Alamofire.request(urlString, method: .post, parameters: parameters as? Parameters).responseJSON
+        {
+            response in
+            
+            switch(response.result) {
+            case .success(_):
+                if let data = response.result.value {
                     
-                       print("parameters-------\(String(describing: parameters))")
-                       
-                       Alamofire.request(urlString, method: .post, parameters: parameters as? Parameters).responseJSON
-                           {
-                               response in
-                   
-                               switch(response.result) {
-                               case .success(_):
-                                  if let data = response.result.value {
-
-                                   
-                                   let JSON = data as! NSDictionary
-                                    // print(JSON)
-                                   
-                                   var strSuccess : String!
-                                   strSuccess = JSON["status"]as Any as? String
-                                   
-                                   var strSuccessAlert : String!
-                                   strSuccessAlert = JSON["msg"]as Any as? String
-                                   
-                                   if strSuccess == "success" //true
-                                   {
-                                       // var ar : NSArray!
-                                       // ar = (JSON["data"] as! Array<Any>) as NSArray
-                                       // self.arrListOfOrderedCard = (ar as! Array<Any>)
-                                     
-                                    // self.tbleView.delegate = self
-                                    // self.tbleView.dataSource = self
-                                    
-                                    // self.tbleView.reloadData()
-                                    self.navigationController?.popViewController(animated: true)
-                                    ERProgressHud.sharedInstance.hide()
-                                   }
-                                   else
-                                   {
-                                   
-                                    CRNotifications.showNotification(type: CRNotifications.error, title: "Error!", message:strSuccessAlert, dismissDelay: 1.5, completion:{})
-                                       ERProgressHud.sharedInstance.hide()
-                                   }
-                                   
-                               }
-
-                               case .failure(_):
-                                   print("Error message:\(String(describing: response.result.error))")
-                                   // self.indicator.stopAnimating()
-                                   // self.enableService()
-                                   ERProgressHud.sharedInstance.hide()
-                                   
-                                   let alertController = UIAlertController(title: nil, message: SERVER_ISSUE_MESSAGE_ONE+"\n"+SERVER_ISSUE_MESSAGE_TWO, preferredStyle: .actionSheet)
-                                   
-                                   let okAction = UIAlertAction(title: "OK", style: UIAlertAction.Style.default) {
-                                           UIAlertAction in
-                                           NSLog("OK Pressed")
-                                       }
-                                   
-                                   alertController.addAction(okAction)
-                                   
-                                   self.present(alertController, animated: true, completion: nil)
-                                   
-                                   break
-                                }
-                           }
+                    
+                    let JSON = data as! NSDictionary
+                    // print(JSON)
+                    
+                    var strSuccess : String!
+                    strSuccess = JSON["status"]as Any as? String
+                    
+                    var strSuccessAlert : String!
+                    strSuccessAlert = JSON["msg"]as Any as? String
+                    
+                    if strSuccess == "success" //true
+                    {
+                        // var ar : NSArray!
+                        // ar = (JSON["data"] as! Array<Any>) as NSArray
+                        // self.arrListOfOrderedCard = (ar as! Array<Any>)
+                        
+                        // self.tbleView.delegate = self
+                        // self.tbleView.dataSource = self
+                        
+                        // self.tbleView.reloadData()
+                        self.navigationController?.popViewController(animated: true)
+                        ERProgressHud.sharedInstance.hide()
+                        
+                        let defaults = UserDefaults.standard
+                        defaults.set("", forKey: "key_save_total_users")
+                    }
+                    else
+                    {
+                        
+                        CRNotifications.showNotification(type: CRNotifications.error, title: "Error!", message:strSuccessAlert, dismissDelay: 1.5, completion:{})
+                        ERProgressHud.sharedInstance.hide()
+                    }
+                    
+                }
+                
+            case .failure(_):
+                print("Error message:\(String(describing: response.result.error))")
+                // self.indicator.stopAnimating()
+                // self.enableService()
+                ERProgressHud.sharedInstance.hide()
+                
+                let alertController = UIAlertController(title: nil, message: SERVER_ISSUE_MESSAGE_ONE+"\n"+SERVER_ISSUE_MESSAGE_TWO, preferredStyle: .actionSheet)
+                
+                let okAction = UIAlertAction(title: "OK", style: UIAlertAction.Style.default) {
+                    UIAlertAction in
+                    NSLog("OK Pressed")
+                }
+                
+                alertController.addAction(okAction)
+                
+                self.present(alertController, animated: true, completion: nil)
+                
+                break
+            }
+        }
         
         
         
@@ -260,97 +281,97 @@ class AddNewGiftCard: UIViewController {
     
     
     @objc func allUsersWB() {
-           
-           
+        
+        
         let defaults = UserDefaults.standard
         let userName = defaults.string(forKey: "KeyLoginPersonal")
         if userName == "loginViaPersonal" {
             // personal user
-             ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
+            ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
             
         }
         else {
-             ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
+            ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
         }
         
         let urlString = BASE_URL_SWIIPE
-               
+        
         var parameters:Dictionary<AnyHashable, Any>!
         
         if let person = UserDefaults.standard.value(forKey: "keyLoginFullData") as? [String:Any]
         {
             let x : Int = (person["userId"] as! Int)
             let myString = String(x)
-                   parameters = [
-                       "action"     : "userlist",
-                        "userId"    : String(myString),
-                        "pageNo"     : "",
-                   ]
+            parameters = [
+                "action"     : "userlist",
+                "userId"    : String(myString),
+                "pageNo"     : "",
+            ]
         }
+        
+        print("parameters-------\(String(describing: parameters))")
+        
+        Alamofire.request(urlString, method: .post, parameters: parameters as? Parameters).responseJSON
+        {
+            response in
+            
+            switch(response.result) {
+            case .success(_):
+                if let data = response.result.value {
+                    
+                    
+                    let JSON = data as! NSDictionary
+                    // print(JSON)
+                    
+                    var strSuccess : String!
+                    strSuccess = JSON["status"]as Any as? String
+                    
+                    var strSuccessAlert : String!
+                    strSuccessAlert = JSON["msg"]as Any as? String
+                    
+                    if strSuccess == "success" //true
+                    {
+                        var ar : NSArray!
+                        ar = (JSON["data"] as! Array<Any>) as NSArray
+                        self.arrListOfOrderedCard = (ar as! Array<Any>)
+                        
+                        self.tbleView.delegate = self
+                        self.tbleView.dataSource = self
+                        
+                        self.tbleView.reloadData()
+                        ERProgressHud.sharedInstance.hide()
+                    }
+                    else
+                    {
+                        
+                        CRNotifications.showNotification(type: CRNotifications.error, title: "Error!", message:strSuccessAlert, dismissDelay: 1.5, completion:{})
+                        ERProgressHud.sharedInstance.hide()
+                    }
+                    
+                }
                 
-                   print("parameters-------\(String(describing: parameters))")
-                   
-                   Alamofire.request(urlString, method: .post, parameters: parameters as? Parameters).responseJSON
-                       {
-                           response in
-               
-                           switch(response.result) {
-                           case .success(_):
-                              if let data = response.result.value {
-
-                               
-                               let JSON = data as! NSDictionary
-                                // print(JSON)
-                               
-                               var strSuccess : String!
-                               strSuccess = JSON["status"]as Any as? String
-                               
-                               var strSuccessAlert : String!
-                               strSuccessAlert = JSON["msg"]as Any as? String
-                               
-                               if strSuccess == "success" //true
-                               {
-                                   var ar : NSArray!
-                                   ar = (JSON["data"] as! Array<Any>) as NSArray
-                                   self.arrListOfOrderedCard = (ar as! Array<Any>)
-                                 
-                                self.tbleView.delegate = self
-                                self.tbleView.dataSource = self
-                                
-                                self.tbleView.reloadData()
-                                ERProgressHud.sharedInstance.hide()
-                               }
-                               else
-                               {
-                               
-                                CRNotifications.showNotification(type: CRNotifications.error, title: "Error!", message:strSuccessAlert, dismissDelay: 1.5, completion:{})
-                                   ERProgressHud.sharedInstance.hide()
-                               }
-                               
-                           }
-
-                           case .failure(_):
-                               print("Error message:\(String(describing: response.result.error))")
-                               // self.indicator.stopAnimating()
-                               // self.enableService()
-                               ERProgressHud.sharedInstance.hide()
-                               
-                               let alertController = UIAlertController(title: nil, message: SERVER_ISSUE_MESSAGE_ONE+"\n"+SERVER_ISSUE_MESSAGE_TWO, preferredStyle: .actionSheet)
-                               
-                               let okAction = UIAlertAction(title: "OK", style: UIAlertAction.Style.default) {
-                                       UIAlertAction in
-                                       NSLog("OK Pressed")
-                                   }
-                               
-                               alertController.addAction(okAction)
-                               
-                               self.present(alertController, animated: true, completion: nil)
-                               
-                               break
-                            }
-                       }
-    
-       }
+            case .failure(_):
+                print("Error message:\(String(describing: response.result.error))")
+                // self.indicator.stopAnimating()
+                // self.enableService()
+                ERProgressHud.sharedInstance.hide()
+                
+                let alertController = UIAlertController(title: nil, message: SERVER_ISSUE_MESSAGE_ONE+"\n"+SERVER_ISSUE_MESSAGE_TWO, preferredStyle: .actionSheet)
+                
+                let okAction = UIAlertAction(title: "OK", style: UIAlertAction.Style.default) {
+                    UIAlertAction in
+                    NSLog("OK Pressed")
+                }
+                
+                alertController.addAction(okAction)
+                
+                self.present(alertController, animated: true, completion: nil)
+                
+                break
+            }
+        }
+        
+    }
 }
 
 extension AddNewGiftCard: UITableViewDataSource {
@@ -372,23 +393,28 @@ extension AddNewGiftCard: UITableViewDataSource {
         cell.btnSelectUser.addTarget(self, action: #selector(selectUserClick), for: .touchUpInside)
         
         cell.btnGiftCard.addTarget(self, action: #selector(validationBeforeSubmitCardWB), for: .touchUpInside)
-         
+        
         return cell
     }
     
     @objc func selectUserClick() {
-        guard let popupVC = self.storyboard?.instantiateViewController(withIdentifier: "secondVC") as? ExamplePopupViewController else { return }
-        popupVC.height = self.height
-        popupVC.topCornerRadius = self.topCornerRadius
-        popupVC.presentDuration = self.presentDuration
-        popupVC.dismissDuration = self.dismissDuration
-        //popupVC.shouldDismissInteractivelty = dismissInteractivelySwitch.isOn
-        popupVC.popupDelegate = self
-        popupVC.strGetDetails = "addNewGiftSelectUsers"
-        //popupVC.getArrListOfCategory =
-        popupVC.arrTotalUser = self.arrListOfOrderedCard as NSArray?
-        self.present(popupVC, animated: true, completion: nil)
+        
+        let push = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "total_users_list_id") as? total_users_list
+        self.navigationController?.pushViewController(push!, animated: true)
+        
+        /*guard let popupVC = self.storyboard?.instantiateViewController(withIdentifier: "secondVC") as? ExamplePopupViewController else { return }
+         popupVC.height = self.height
+         popupVC.topCornerRadius = self.topCornerRadius
+         popupVC.presentDuration = self.presentDuration
+         popupVC.dismissDuration = self.dismissDuration
+         //popupVC.shouldDismissInteractivelty = dismissInteractivelySwitch.isOn
+         popupVC.popupDelegate = self
+         popupVC.strGetDetails = "addNewGiftSelectUsers"
+         //popupVC.getArrListOfCategory =
+         popupVC.arrTotalUser = self.arrListOfOrderedCard as NSArray?
+         self.present(popupVC, animated: true, completion: nil)*/
     }
+    
     @objc func deleteCard(_ sender:UIButton) {
         // print(sender.tag)
         
@@ -432,15 +458,15 @@ extension AddNewGiftCard: BottomPopupDelegate {
         // let buttonPosition = sender.convert(CGPoint.zero, to: self.tbleView)
         // let indexPath = self.tbleView.indexPathForRow(at:buttonPosition)
         // let cell = self.tbleView.cellForRow(at: indexPath!) as! EditProfileTableCell
-                
+        
         // card details
         if let person = UserDefaults.standard.value(forKey: "keyDoneSelectingUser") as? [String:Any]
         {
-              // print(person as Any)
+            // print(person as Any)
             
             /*
              ["contactNumber": 1111111111, "userId": 31, "deviceToken": , "userName": Pradeep Bamola, "userN": , "userImage": http://demo2.evirtualservices.com/swiipe/site/img/uploads/users/1573199961images(24).jpeg, "activeMode": Yes]
-
+             
              */
             
             
@@ -449,11 +475,11 @@ extension AddNewGiftCard: BottomPopupDelegate {
             let userName = defaults.string(forKey: "KeyLoginPersonal")
             if userName == "loginViaPersonal" {
                 // personal user
-                 // ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
+                // ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
                 
             }
             else {
-                 // ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
+                // ERProgressHud.sharedInstance.showDarkBackgroundView(withTitle: "Please wait...")
             }
             
             let indexPath = IndexPath.init(row: 0, section: 0)
@@ -462,9 +488,9 @@ extension AddNewGiftCard: BottomPopupDelegate {
             cell.txtSelectUser.text = (person["userName"] as! String)
             
             
-             // let x : Int = (person["cardId"] as! Int)
-             // let myString = String(x)
-             // print(myString as Any)
+            // let x : Int = (person["cardId"] as! Int)
+            // let myString = String(x)
+            // print(myString as Any)
             
             
             let y : Int = (person["userId"] as! Int)
@@ -474,7 +500,7 @@ extension AddNewGiftCard: BottomPopupDelegate {
             
             
             
-           
+            
             
             
             // let defaults = UserDefaults.standard
@@ -487,10 +513,10 @@ extension AddNewGiftCard: BottomPopupDelegate {
             print("Never went to that page.")
         }
         
-       
+        
         
         // bank details
-       
+        
     }
     
     func bottomPopupDismissInteractionPercentChanged(from oldValue: CGFloat, to newValue: CGFloat) {

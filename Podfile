@@ -26,11 +26,11 @@ pod 'SDWebImage'
 
 # PODS for credit card
 pod 'CreditCardForm'
-# pod 'Stripe'
+#pod 'Stripe'
 pod 'Stripe', '19.0.1'
 
+#pod 'CardScan'
 pod 'CardScan'
-pod 'CardScan/Stripe'
 
 pod 'Firebase'
 pod 'Firebase/Auth'

@@ -53,13 +53,13 @@ class AddProcessCardTwoTableCell: UITableViewCell,UITextFieldDelegate {
             txtNameOnCard.layer.borderWidth = 0.0
         }
     }
+    
     @IBOutlet weak var lblUnderLineNameOnCard:UILabel! {
         didSet {
             lblUnderLineNameOnCard.text = ""
             lblUnderLineNameOnCard.backgroundColor = UNDERLINE_COLOR
         }
     }
-    
     
     // email address text field
     @IBOutlet weak var txtEmailAddress:UITextField! {
@@ -74,6 +74,7 @@ class AddProcessCardTwoTableCell: UITableViewCell,UITextFieldDelegate {
             txtEmailAddress.layer.borderWidth = 0.0
         }
     }
+    
     @IBOutlet weak var lblUnderLineEmailAddress:UILabel! {
         didSet {
             lblUnderLineEmailAddress.text = ""
@@ -95,12 +96,14 @@ class AddProcessCardTwoTableCell: UITableViewCell,UITextFieldDelegate {
             txtCreditCardNumber.layer.borderWidth = 0.0
         }
     }
+    
     @IBOutlet weak var lblUnderLineCreditCardNumber:UILabel! {
         didSet {
             lblUnderLineCreditCardNumber.text = ""
             lblUnderLineCreditCardNumber.backgroundColor = UNDERLINE_COLOR
         }
     }
+    
     @IBOutlet weak var lblCardScanAutoFill:UILabel! {
         didSet {
             lblCardScanAutoFill.layer.cornerRadius = 4
@@ -126,6 +129,7 @@ class AddProcessCardTwoTableCell: UITableViewCell,UITextFieldDelegate {
             txtExpDate.keyboardType = .numberPad
         }
     }
+    
     @IBOutlet weak var txtCVV:UITextField! {
         didSet {
             txtCVV.keyboardType = .numberPad
@@ -139,6 +143,7 @@ class AddProcessCardTwoTableCell: UITableViewCell,UITextFieldDelegate {
             txtCVV.layer.borderWidth = 0.0
         }
     }
+    
     @IBOutlet weak var txtZipCode:UITextField! {
         didSet {
             txtZipCode.keyboardType = .numberPad
@@ -167,6 +172,7 @@ class AddProcessCardTwoTableCell: UITableViewCell,UITextFieldDelegate {
             txtPhoneNumber.keyboardType = .numberPad
         }
     }
+    
     @IBOutlet weak var lblUnderLinePhoneNumber:UILabel! {
         didSet {
             lblUnderLinePhoneNumber.text = ""
@@ -182,11 +188,17 @@ class AddProcessCardTwoTableCell: UITableViewCell,UITextFieldDelegate {
         }
     }
     
-    @IBOutlet weak var btnScanCard:UIButton! {
+    @IBOutlet weak var btnVisaPay:UIButton! {
         didSet {
-            
+            btnVisaPay.layer.cornerRadius = 8
+            btnVisaPay.clipsToBounds = true
+            btnVisaPay.backgroundColor = .white
+            btnVisaPay.layer.borderColor = UIColor.lightGray.cgColor
+            btnVisaPay.layer.borderWidth = 1
         }
     }
+    
+    @IBOutlet weak var btnScanCard:UIButton!
     
     override func awakeFromNib() {
         super.awakeFromNib()

@@ -8,11 +8,10 @@
 
 import UIKit
 
-class BottomPopupPresentationController: UIPresentationController {
-    
-    fileprivate var dimmingView: UIView!
-    fileprivate let popupHeight: CGFloat
-    fileprivate let dimmingViewAlpha: CGFloat
+final class BottomPopupPresentationController: UIPresentationController {
+    private var dimmingView: UIView!
+    private var popupHeight: CGFloat
+    private unowned var attributesDelegate: BottomPopupAttributesDelegate
     
     override var frameOfPresentedViewInContainerView: CGRect {
         get {
@@ -31,9 +30,9 @@ class BottomPopupPresentationController: UIPresentationController {
         })
     }
     
-    init(presentedViewController: UIViewController, presenting presentingViewController: UIViewController?, usingHeight height: CGFloat, andDimmingViewAlpha dimmingAlpha: CGFloat) {
-        self.popupHeight = height
-        self.dimmingViewAlpha = dimmingAlpha
+    init(presentedViewController: UIViewController, presenting presentingViewController: UIViewController?, attributesDelegate: BottomPopupAttributesDelegate) {
+        self.attributesDelegate = attributesDelegate
+        popupHeight = attributesDelegate.popupHeight
         super.init(presentedViewController: presentedViewController, presenting: presentingViewController)
         setupDimmingView()
     }
@@ -44,7 +43,7 @@ class BottomPopupPresentationController: UIPresentationController {
     
     override func presentationTransitionWillBegin() {
         containerView?.insertSubview(dimmingView, at: 0)
-        changeDimmingViewAlphaAlongWithAnimation(to: dimmingViewAlpha)
+        changeDimmingViewAlphaAlongWithAnimation(to: attributesDelegate.popupDimmingViewAlpha)
     }
     
     override func dismissalTransitionWillBegin() {
@@ -52,10 +51,12 @@ class BottomPopupPresentationController: UIPresentationController {
     }
     
     @objc private func handleTap(_ tap: UITapGestureRecognizer) {
+        guard attributesDelegate.popupShouldBeganDismiss else { return }
         presentedViewController.dismiss(animated: true, completion: nil)
     }
     
     @objc private func handleSwipe(_ swipe: UISwipeGestureRecognizer) {
+        guard attributesDelegate.popupShouldBeganDismiss else { return }
         presentedViewController.dismiss(animated: true, completion: nil)
     }
 }
@@ -72,3 +73,12 @@ private extension BottomPopupPresentationController {
         [tapGesture, swipeGesture].forEach { dimmingView.addGestureRecognizer($0) }
     }
 }
+
+extension BottomPopupPresentationController {
+     func setHeight(to height: CGFloat) {
+        popupHeight = height
+        UIView.animate(withDuration: attributesDelegate.popupPresentDuration) {
+            self.containerViewWillLayoutSubviews()
+        }
+     }
+ }

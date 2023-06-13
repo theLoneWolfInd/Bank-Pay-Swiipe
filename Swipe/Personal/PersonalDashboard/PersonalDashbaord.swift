@@ -593,12 +593,13 @@ extension PersonalDashbaord: UICollectionViewDelegateFlowLayout {
         
         var sizes: CGSize
                 
-        let result = UIScreen.main.bounds.size
+        // let result = UIScreen.main.bounds.size
         //NSLog("%f",result.height)
         
         
+        sizes = CGSize(width: 120, height: 120)
         
-        if result.height == 480
+        /*if result.height == 480
         {
             sizes = CGSize(width: 120, height: 120)
         }
@@ -625,7 +626,7 @@ extension PersonalDashbaord: UICollectionViewDelegateFlowLayout {
         else
         {
             sizes = CGSize(width: self.view.frame.size.width, height: 350)
-        }
+        }*/
         
         
         return sizes
@@ -647,7 +648,9 @@ extension PersonalDashbaord: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets
     {
-        let result = UIScreen.main.bounds.size
+        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        
+        /*let result = UIScreen.main.bounds.size
         //NSLog("%f",result.height)
         
         if result.height == 812 // 11 pro
@@ -662,7 +665,7 @@ extension PersonalDashbaord: UICollectionViewDelegateFlowLayout {
             else
             {
                 return UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-            }
+            }*/
     }
     
 }

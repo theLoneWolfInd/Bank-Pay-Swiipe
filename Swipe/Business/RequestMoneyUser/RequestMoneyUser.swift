@@ -282,7 +282,7 @@ extension RequestMoneyUser: UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell:RequestMoneyUserTableCell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier) as! RequestMoneyUserTableCell
+        let cell:RequestMoneyUserTableCell = tableView.dequeueReusableCell(withIdentifier: "requestMoneyUserTableCell") as! RequestMoneyUserTableCell
         
         cell.backgroundColor = .white
         

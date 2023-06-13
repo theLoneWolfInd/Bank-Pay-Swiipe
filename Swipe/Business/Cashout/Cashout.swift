@@ -206,7 +206,7 @@ class Cashout: UIViewController,UITextFieldDelegate {
         
         txtEnterAmount.delegate = self
         
-         setdragButtomFrame()
+         // setdragButtomFrame()
         
         // list of al bank wb
         listOfBankWB()
